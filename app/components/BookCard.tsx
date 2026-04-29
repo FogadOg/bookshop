@@ -25,7 +25,10 @@ export default function BookCard({ book }: { book: Book }) {
           <p className="text-sm text-gray-400 flex-1 line-clamp-2">{book.description}</p>
           <div className="flex items-center justify-between mt-2">
             <span className="font-bold">{book.price} kr</span>
-            <span className="text-xs text-gray-400">Lager: {book.stock}</span>
+            {book.stock === 0
+              ? <span className="badge badge-error badge-sm">Utsolgt</span>
+              : <span className="text-xs text-gray-400">Lager: {book.stock}</span>
+            }
           </div>
         </div>
       </div>
@@ -43,8 +46,12 @@ export default function BookCard({ book }: { book: Book }) {
             <span><span className="font-medium">Lager:</span> {book.stock}</span>
           </div>
           <div className="modal-action">
-            <button className="btn btn-neutral" onClick={handleAddToCart}>
-              Legg i handlekurv
+            <button
+              className="btn btn-neutral"
+              onClick={handleAddToCart}
+              disabled={book.stock === 0}
+            >
+              {book.stock === 0 ? "Utsolgt" : "Legg i handlekurv"}
             </button>
             <form method="dialog">
               <button className="btn">Lukk</button>
