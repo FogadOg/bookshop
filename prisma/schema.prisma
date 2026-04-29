@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Book {
+  id          String      @id @default(cuid())
+  title       String
+  author      String
+  description String
+  price       Float
+  isbn        String      @unique
+  stock       Int         @default(0)
+  category    String
+  imageUrl    String?
+  createdAt   DateTime    @default(now())
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  customerName  String
+  customerEmail String
+  address       String
+  status        OrderStatus @default(NY)
+  total         Float
+  createdAt     DateTime    @default(now())
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id       String @id @default(cuid())
+  orderId  String
+  bookId   String
+  quantity Int
+  price    Float
+  order    Order  @relation(fields: [orderId], references: [id])
+  book     Book   @relation(fields: [bookId], references: [id])
+}
+
+enum OrderStatus {
+  NY
+  BEHANDLES
+  SENDT
+  KANSELLERT
+}
