@@ -1,11 +1,12 @@
 import { prisma } from "../lib/prisma";
+import BookCard from "./components/BookCard";
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; kategori?: string }>;
+  searchParams: Promise<{ q?: string; category?: string }>;
 }) {
-  const { q, kategori } = await searchParams;
+  const { q, category } = await searchParams;
 
   const [books, categories] = await Promise.all([
     prisma.book.findMany({
@@ -19,7 +20,7 @@ export default async function Home({
                 ],
               }
             : {},
-          kategori ? { category: kategori } : {},
+          category ? { category: category } : {},
         ],
       },
       orderBy: { createdAt: "desc" },
@@ -41,10 +42,10 @@ export default async function Home({
             placeholder="Søk..."
             defaultValue={q ?? ""}
           />
-          <select name="kategori" className="select join-item">
+          <select name="category" defaultValue={category ?? ""} className="select join-item">
             <option value="">Alle kategorier</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat} selected={cat === kategori}>
+              <option key={cat} value={cat}>
                 {cat}
               </option>
             ))}
@@ -58,18 +59,7 @@ export default async function Home({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {books.map((book) => (
-            <div key={book.id} className="card card-bordered bg-base-100 shadow-sm">
-              <div className="card-body gap-1">
-                <span className="badge badge-ghost badge-sm">{book.category}</span>
-                <h2 className="card-title text-base">{book.title}</h2>
-                <p className="text-sm text-gray-500">{book.author}</p>
-                <p className="text-sm text-gray-400 flex-1">{book.description}</p>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-bold">{book.price} kr</span>
-                  <span className="text-xs text-gray-400">Lager: {book.stock}</span>
-                </div>
-              </div>
-            </div>
+            <BookCard key={book.id} book={book} />
           ))}
         </div>
       )}
