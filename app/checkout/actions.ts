@@ -57,15 +57,19 @@ export async function createOrder(items: CartItem[], formData: FormData) {
     ),
   ]);
 
-  await sendOrderConfirmation({
-    to: customerEmail,
-    customerName,
-    orderId: order.id,
-    items: items.map((i) => ({ title: i.title, quantity: i.quantity, price: i.price })),
-    total,
-    discountCode: discountPercent > 0 ? discountCodeInput : null,
-    discountPercent: discountPercent > 0 ? discountPercent : null,
-  });
+  try {
+    await sendOrderConfirmation({
+      to: customerEmail,
+      customerName,
+      orderId: order.id,
+      items: items.map((i) => ({ title: i.title, quantity: i.quantity, price: i.price })),
+      total,
+      discountCode: discountPercent > 0 ? discountCodeInput : null,
+      discountPercent: discountPercent > 0 ? discountPercent : null,
+    });
+  } catch (err) {
+    console.error("Failed to send order confirmation email:", err);
+  }
 
   redirect(`/ordre-bekreftelse/${order.id}`);
 }
