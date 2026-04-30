@@ -2,6 +2,7 @@
 
 import { prisma } from "../../lib/prisma";
 import { redirect } from "next/navigation";
+import { sendOrderConfirmation } from "../../lib/mailer";
 
 type CartItem = {
   bookId: string;
@@ -55,6 +56,16 @@ export async function createOrder(items: CartItem[], formData: FormData) {
       })
     ),
   ]);
+
+  await sendOrderConfirmation({
+    to: customerEmail,
+    customerName,
+    orderId: order.id,
+    items: items.map((i) => ({ title: i.title, quantity: i.quantity, price: i.price })),
+    total,
+    discountCode: discountPercent > 0 ? discountCodeInput : null,
+    discountPercent: discountPercent > 0 ? discountPercent : null,
+  });
 
   redirect(`/ordre-bekreftelse/${order.id}`);
 }
