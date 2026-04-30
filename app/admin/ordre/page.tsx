@@ -3,6 +3,8 @@ import Link from "next/link";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 const statusLabel: Record<string, string> = {
   NY: "Ny",
   BEHANDLES: "Behandles",

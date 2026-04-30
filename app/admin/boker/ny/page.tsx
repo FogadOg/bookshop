@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "../../../../auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function NyBokPage() {
   const session = await auth();
   if (!session) redirect("/admin/logg-inn");

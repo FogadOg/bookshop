@@ -2,6 +2,8 @@ import { prisma } from "../../../lib/prisma";
 import Link from "next/link";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import { createDiscountCode, toggleDiscountCode, deleteDiscountCode } from "./actions";
 
 export default async function RabattkoderPage() {

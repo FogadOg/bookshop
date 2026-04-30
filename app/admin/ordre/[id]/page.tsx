@@ -4,6 +4,8 @@ import Link from "next/link";
 import { OrderStatus } from "@prisma/client";
 import { auth } from "../../../../auth";
 
+export const dynamic = "force-dynamic";
+
 const statusLabel: Record<string, string> = {
   NY: "Ny",
   BEHANDLES: "Behandles",
