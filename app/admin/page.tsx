@@ -16,6 +16,9 @@ export default async function AdminPage() {
           <Link href="/admin/ordre" className="btn btn-outline btn-sm">
             Ordre ({orderCount})
           </Link>
+          <Link href="/admin/rabattkoder" className="btn btn-outline btn-sm">
+            Rabattkoder
+          </Link>
           <form action={async () => { "use server"; await signOut({ redirectTo: "/admin/logg-inn" }); }}>
             <button className="btn btn-ghost btn-sm">Logg ut</button>
           </form>

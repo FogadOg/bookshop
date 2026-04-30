@@ -30,14 +30,16 @@ model Book {
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  customerName  String
-  customerEmail String
-  address       String
-  status        OrderStatus @default(NY)
-  total         Float
-  createdAt     DateTime    @default(now())
-  items         OrderItem[]
+  id              String      @id @default(cuid())
+  customerName    String
+  customerEmail   String
+  address         String
+  status          OrderStatus @default(NY)
+  total           Float
+  discountCode    String?
+  discountPercent Int?
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
 }
 
 model OrderItem {
@@ -48,6 +50,13 @@ model OrderItem {
   price    Float
   order    Order  @relation(fields: [orderId], references: [id])
   book     Book   @relation(fields: [bookId], references: [id])
+}
+
+model DiscountCode {
+  id         String  @id @default(cuid())
+  code       String  @unique
+  percent    Int
+  active     Boolean @default(true)
 }
 
 enum OrderStatus {

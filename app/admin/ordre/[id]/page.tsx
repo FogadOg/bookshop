@@ -55,6 +55,12 @@ export default async function OrdreDetaljPage({
           </div>
         ))}
         <div className="divider my-2" />
+        {order.discountCode && (
+          <div className="flex justify-between text-sm text-green-600 mb-1">
+            <span>Rabatt ({order.discountCode} – {order.discountPercent}%)</span>
+            <span>Inkludert</span>
+          </div>
+        )}
         <div className="flex justify-between font-bold">
           <span>Totalt inkl. mva</span>
           <span>{order.total} kr</span>
