@@ -23,7 +23,7 @@ export default async function AdminPage() {
           <Link href="/admin/rabattkoder" className="btn btn-outline btn-sm">
             Rabattkoder
           </Link>
-          <form action={async () => { "use server"; await signOut({ redirectTo: "/admin/logg-inn" }); }}>
+          <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/admin/logg-inn"); }}>
             <button className="btn btn-ghost btn-sm">Logg ut</button>
           </form>
         </div>
