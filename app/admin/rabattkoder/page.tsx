@@ -2,9 +2,9 @@ import { prisma } from "../../../lib/prisma";
 import Link from "next/link";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
+import { createDiscountCode, toggleDiscountCode, deleteDiscountCode } from "./actions";
 
 export const dynamic = "force-dynamic";
-import { createDiscountCode, toggleDiscountCode, deleteDiscountCode } from "./actions";
 
 export default async function RabattkoderPage() {
   const session = await auth();
@@ -13,17 +13,20 @@ export default async function RabattkoderPage() {
   const codes = await prisma.discountCode.findMany({ orderBy: { code: "asc" } });
 
   return (
-    <main className="max-w-2xl mx-auto p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin" className="btn btn-ghost btn-sm">← Tilbake</Link>
-        <h1 className="text-2xl font-bold">Rabattkoder</h1>
+    <main className="max-w-2xl mx-auto px-6 py-10">
+      <div className="flex items-center gap-4 mb-8">
+        <Link href="/admin" className="btn btn-ghost btn-sm">Tilbake</Link>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Rabattkoder</h1>
+          <p className="text-sm text-gray-400 mt-0.5">{codes.length} koder totalt</p>
+        </div>
       </div>
 
-      <div className="border rounded-lg p-4 bg-white mb-6">
-        <h2 className="font-semibold mb-3">Ny rabattkode</h2>
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-6">
+        <h2 className="font-semibold mb-4">Ny rabattkode</h2>
         <form action={createDiscountCode} className="flex gap-2 items-end">
           <div className="flex-1">
-            <label className="label"><span className="label-text">Kode</span></label>
+            <label className="label pt-0"><span className="label-text font-medium">Kode</span></label>
             <input
               name="code"
               required
@@ -32,7 +35,7 @@ export default async function RabattkoderPage() {
             />
           </div>
           <div className="w-28">
-            <label className="label"><span className="label-text">Rabatt %</span></label>
+            <label className="label pt-0"><span className="label-text font-medium">Rabatt %</span></label>
             <input
               name="percent"
               type="number"
@@ -47,9 +50,9 @@ export default async function RabattkoderPage() {
         </form>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
         <table className="table bg-white">
-          <thead>
+          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
             <tr>
               <th>Kode</th>
               <th>Rabatt</th>
@@ -59,9 +62,9 @@ export default async function RabattkoderPage() {
           </thead>
           <tbody>
             {codes.map((c) => (
-              <tr key={c.id}>
+              <tr key={c.id} className="hover:bg-gray-50 transition-colors">
                 <td className="font-mono font-medium">{c.code}</td>
-                <td>{c.percent}%</td>
+                <td className="font-medium">{c.percent}%</td>
                 <td>
                   {c.active
                     ? <span className="badge badge-success badge-sm">Aktiv</span>
@@ -80,7 +83,9 @@ export default async function RabattkoderPage() {
               </tr>
             ))}
             {codes.length === 0 && (
-              <tr><td colSpan={4} className="text-center text-gray-400 py-4">Ingen rabattkoder ennå</td></tr>
+              <tr>
+                <td colSpan={4} className="text-center text-gray-400 py-10">Ingen rabattkoder ennå</td>
+              </tr>
             )}
           </tbody>
         </table>

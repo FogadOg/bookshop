@@ -18,36 +18,40 @@ export default async function OrdreBekreftelserPage({
   if (!order) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto p-8">
+    <main className="max-w-2xl mx-auto px-6 py-10">
       <div className="text-center mb-8">
-        <div className="text-5xl mb-4">✓</div>
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success/10 text-success text-3xl mb-4">✓</div>
         <h1 className="text-2xl font-bold">Bestilling bekreftet!</h1>
-        <p className="text-gray-500 mt-2">Ordrenummer: {order.id}</p>
+        <p className="text-gray-400 text-sm mt-1">Ordrenummer: <span className="font-mono">{order.id.slice(-8).toUpperCase()}</span></p>
       </div>
 
-      <div className="border rounded-lg p-4 bg-white mb-4">
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-4">
         <h2 className="font-semibold mb-3">Leveringsinfo</h2>
-        <p className="text-sm">{order.customerName}</p>
-        <p className="text-sm">{order.customerEmail}</p>
-        <p className="text-sm">{order.address}</p>
+        <div className="text-sm text-gray-600 flex flex-col gap-1">
+          <p className="font-medium text-gray-900">{order.customerName}</p>
+          <p>{order.customerEmail}</p>
+          <p className="text-gray-500">{order.address}</p>
+        </div>
       </div>
 
-      <div className="border rounded-lg p-4 bg-white mb-4">
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-4">
         <h2 className="font-semibold mb-3">Bestilte bøker</h2>
-        {order.items.map((item) => (
-          <div key={item.id} className="flex justify-between text-sm py-1">
-            <span>{item.book.title} × {item.quantity}</span>
-            <span>{Math.round(item.price * item.quantity * 100) / 100} kr</span>
-          </div>
-        ))}
-        <div className="divider my-2" />
+        <div className="flex flex-col gap-1">
+          {order.items.map((item) => (
+            <div key={item.id} className="flex justify-between text-sm">
+              <span className="text-gray-600">{item.book.title} × {item.quantity}</span>
+              <span>{Math.round(item.price * item.quantity * 100) / 100} kr</span>
+            </div>
+          ))}
+        </div>
+        <div className="divider my-3" />
         {order.discountCode && (
-          <div className="flex justify-between text-sm text-green-600 mb-1">
+          <div className="flex justify-between text-sm text-success font-medium mb-2">
             <span>Rabatt ({order.discountCode} – {order.discountPercent}%)</span>
             <span>Inkludert</span>
           </div>
         )}
-        <div className="flex justify-between font-bold">
+        <div className="flex justify-between font-bold text-base">
           <span>Totalt inkl. mva</span>
           <span>{order.total} kr</span>
         </div>

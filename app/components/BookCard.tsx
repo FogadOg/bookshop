@@ -1,67 +1,49 @@
 "use client";
 
 import { Book } from "@prisma/client";
+import Link from "next/link";
 import { useCart } from "../context/CartContext";
 
 export default function BookCard({ book }: { book: Book }) {
-  const id = `modal-${book.id}`;
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
 
-  function handleAddToCart() {
+  const cartItem = items.find((i) => i.bookId === book.id);
+  const atStockLimit = cartItem ? cartItem.quantity >= book.stock : false;
+
+  function handleAddToCart(e: React.MouseEvent) {
+    e.preventDefault();
     addToCart({ bookId: book.id, title: book.title, price: book.price, stock: book.stock });
-    (document.getElementById(id) as HTMLDialogElement).close();
   }
 
   return (
-    <>
-      <div
-        className="card card-bordered bg-white shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-        onClick={() => (document.getElementById(id) as HTMLDialogElement).showModal()}
-      >
-        <div className="card-body gap-1">
-          <span className="badge badge-ghost badge-sm">{book.category}</span>
-          <h2 className="card-title text-base">{book.title}</h2>
-          <p className="text-sm text-gray-500">{book.author}</p>
-          <p className="text-sm text-gray-400 flex-1 line-clamp-2">{book.description}</p>
-          <div className="flex items-center justify-between mt-2">
-            <span className="font-bold">{book.price} kr</span>
+    <Link
+      href={`/boker/${book.id}`}
+      className="card bg-white border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col"
+    >
+      {book.imageUrl && (
+        <img src={book.imageUrl} alt={book.title} className="rounded-t-xl w-full h-48 object-cover" />
+      )}
+      <div className="card-body gap-2 p-5 flex flex-col flex-1">
+        <span className="badge badge-neutral badge-sm w-fit">{book.category}</span>
+        <h2 className="font-bold text-lg leading-snug">{book.title}</h2>
+        <p className="text-sm text-gray-500">{book.author}</p>
+        <p className="text-sm text-gray-400 line-clamp-2 flex-1">{book.description}</p>
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-bold text-base">{book.price} kr</span>
             {book.stock === 0
               ? <span className="badge badge-error badge-sm">Utsolgt</span>
-              : <span className="text-xs text-gray-400">Lager: {book.stock}</span>
-            }
+              : <span className="text-xs text-gray-400">Lager: {book.stock}</span>}
           </div>
+          <button
+            onClick={handleAddToCart}
+            disabled={book.stock === 0 || atStockLimit}
+            className="btn btn-neutral btn-sm w-full"
+          >
+            {book.stock === 0 ? "Utsolgt" : atStockLimit ? "Maks antall" : "Legg i handlekurv"}
+          </button>
         </div>
       </div>
-
-      <dialog id={id} className="modal">
-        <div className="modal-box bg-white">
-          <span className="badge badge-ghost mb-2">{book.category}</span>
-          <h3 className="font-bold text-xl">{book.title}</h3>
-          <p className="text-sm text-gray-500 mb-4">{book.author}</p>
-          <p className="py-2">{book.description}</p>
-          <div className="divider" />
-          <div className="flex flex-col gap-1 text-sm">
-            <span><span className="font-medium">ISBN:</span> {book.isbn}</span>
-            <span><span className="font-medium">Pris:</span> {book.price} kr</span>
-            <span><span className="font-medium">Lager:</span> {book.stock}</span>
-          </div>
-          <div className="modal-action">
-            <button
-              className="btn btn-neutral"
-              onClick={handleAddToCart}
-              disabled={book.stock === 0}
-            >
-              {book.stock === 0 ? "Utsolgt" : "Legg i handlekurv"}
-            </button>
-            <form method="dialog">
-              <button className="btn">Lukk</button>
-            </form>
-          </div>
-        </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
-    </>
+    </Link>
   );
 }

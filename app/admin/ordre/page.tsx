@@ -29,19 +29,23 @@ export default async function OrdrePage() {
   });
 
   return (
-    <main className="max-w-5xl mx-auto p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin" className="btn btn-ghost btn-sm">← Tilbake</Link>
-        <h1 className="text-2xl font-bold">Ordre</h1>
+    <main className="max-w-5xl mx-auto px-6 py-10">
+      <div className="flex items-center gap-4 mb-8">
+        <Link href="/admin" className="btn btn-ghost btn-sm">Tilbake</Link>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Ordre</h1>
+          <p className="text-sm text-gray-400 mt-0.5">{orders.length} totalt</p>
+        </div>
       </div>
-      <div className="overflow-x-auto">
+
+      <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
         <table className="table bg-white">
-          <thead>
+          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
             <tr>
               <th>Kunde</th>
               <th>E-post</th>
               <th>Totalt</th>
-              <th>Antall bøker</th>
+              <th>Bøker</th>
               <th>Status</th>
               <th>Dato</th>
               <th></th>
@@ -49,26 +53,31 @@ export default async function OrdrePage() {
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order.id}>
+              <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                 <td className="font-medium">{order.customerName}</td>
-                <td>{order.customerEmail}</td>
-                <td>{order.total} kr</td>
-                <td>{order._count.items}</td>
+                <td className="text-gray-500 text-sm">{order.customerEmail}</td>
+                <td className="font-medium">{order.total} kr</td>
+                <td className="text-gray-500">{order._count.items}</td>
                 <td>
                   <span className={`badge badge-sm ${statusColor[order.status]}`}>
                     {statusLabel[order.status]}
                   </span>
                 </td>
-                <td className="text-sm text-gray-500">
+                <td className="text-sm text-gray-400">
                   {order.createdAt.toLocaleDateString("nb-NO")}
                 </td>
                 <td>
                   <Link href={`/admin/ordre/${order.id}`} className="btn btn-ghost btn-xs">
-                    Se detaljer
+                    Se detaljer →
                   </Link>
                 </td>
               </tr>
             ))}
+            {orders.length === 0 && (
+              <tr>
+                <td colSpan={7} className="text-center text-gray-400 py-10">Ingen ordre ennå</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

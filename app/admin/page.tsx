@@ -15,30 +15,34 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <main className="max-w-5xl mx-auto p-8">
+    <main className="max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Admin</h1>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Bokhandelen</p>
+        </div>
         <div className="flex gap-2">
           <Link href="/admin/ordre" className="btn btn-outline btn-sm">
-            Ordre ({orderCount})
+            Ordre
+            <span className="badge badge-neutral badge-sm ml-1">{orderCount}</span>
           </Link>
           <Link href="/admin/rabattkoder" className="btn btn-outline btn-sm">
             Rabattkoder
           </Link>
           <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/admin/logg-inn"); }}>
-            <button className="btn btn-ghost btn-sm">Logg ut</button>
+            <button className="btn btn-ghost btn-sm text-gray-400">Logg ut</button>
           </form>
         </div>
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Bøker</h2>
+        <h2 className="text-base font-semibold">Bøker ({books.length})</h2>
         <Link href="/admin/boker/ny" className="btn btn-neutral btn-sm">+ Ny bok</Link>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
         <table className="table bg-white">
-          <thead>
+          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
             <tr>
               <th>Tittel</th>
               <th>Forfatter</th>
@@ -50,12 +54,16 @@ export default async function AdminPage() {
           </thead>
           <tbody>
             {books.map((book) => (
-              <tr key={book.id}>
+              <tr key={book.id} className="hover:bg-gray-50 transition-colors">
                 <td className="font-medium">{book.title}</td>
-                <td>{book.author}</td>
+                <td className="text-gray-500">{book.author}</td>
                 <td>{book.price} kr</td>
-                <td>{book.stock === 0 ? <span className="badge badge-error badge-sm">Utsolgt</span> : book.stock}</td>
-                <td>{book.category}</td>
+                <td>
+                  {book.stock === 0
+                    ? <span className="badge badge-error badge-sm">Utsolgt</span>
+                    : <span className="text-sm">{book.stock}</span>}
+                </td>
+                <td><span className="badge badge-ghost badge-sm">{book.category}</span></td>
                 <td>
                   <Link href={`/admin/boker/${book.id}`} className="btn btn-ghost btn-xs">Rediger</Link>
                 </td>

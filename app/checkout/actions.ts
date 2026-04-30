@@ -57,7 +57,6 @@ export async function createOrder(items: CartItem[], formData: FormData) {
     ),
   ]);
 
-  // Fire and forget — do not await so redirect happens immediately
   sendOrderConfirmation({
     to: customerEmail,
     customerName,

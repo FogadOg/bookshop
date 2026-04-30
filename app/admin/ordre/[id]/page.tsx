@@ -13,6 +13,13 @@ const statusLabel: Record<string, string> = {
   KANSELLERT: "Kansellert",
 };
 
+const statusColor: Record<string, string> = {
+  NY: "badge-info",
+  BEHANDLES: "badge-warning",
+  SENDT: "badge-success",
+  KANSELLERT: "badge-error",
+};
+
 export default async function OrdreDetaljPage({
   params,
 }: {
@@ -36,45 +43,53 @@ export default async function OrdreDetaljPage({
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/ordre" className="btn btn-ghost btn-sm">← Tilbake</Link>
-        <h1 className="text-2xl font-bold">Ordre detaljer</h1>
+    <main className="max-w-2xl mx-auto px-6 py-10">
+      <div className="flex items-center gap-4 mb-8">
+        <Link href="/admin/ordre" className="btn btn-ghost btn-sm">Tilbake</Link>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Ordre detaljer</h1>
+          <p className="text-sm text-gray-400 font-mono mt-0.5">{order.id.slice(-8).toUpperCase()}</p>
+        </div>
+        <span className={`badge ${statusColor[order.status]} ml-auto`}>
+          {statusLabel[order.status]}
+        </span>
       </div>
 
-      <div className="border rounded-lg p-4 bg-white mb-4">
-        <h2 className="font-semibold mb-2">Kundeinfo</h2>
-        <p className="text-sm">{order.customerName}</p>
-        <p className="text-sm">{order.customerEmail}</p>
-        <p className="text-sm">{order.address}</p>
-        <p className="text-xs text-gray-400 mt-1">
-          {order.createdAt.toLocaleDateString("nb-NO")}
-        </p>
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-4">
+        <h2 className="font-semibold mb-3">Kundeinfo</h2>
+        <div className="text-sm flex flex-col gap-1">
+          <p className="font-medium text-gray-900">{order.customerName}</p>
+          <p className="text-gray-500">{order.customerEmail}</p>
+          <p className="text-gray-500">{order.address}</p>
+          <p className="text-gray-400 text-xs mt-1">{order.createdAt.toLocaleDateString("nb-NO")}</p>
+        </div>
       </div>
 
-      <div className="border rounded-lg p-4 bg-white mb-4">
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-4">
         <h2 className="font-semibold mb-3">Bøker</h2>
-        {order.items.map((item) => (
-          <div key={item.id} className="flex justify-between text-sm py-1">
-            <span>{item.book.title} × {item.quantity}</span>
-            <span>{Math.round(item.price * item.quantity * 100) / 100} kr</span>
-          </div>
-        ))}
-        <div className="divider my-2" />
+        <div className="flex flex-col gap-1">
+          {order.items.map((item) => (
+            <div key={item.id} className="flex justify-between text-sm">
+              <span className="text-gray-600">{item.book.title} × {item.quantity}</span>
+              <span>{Math.round(item.price * item.quantity * 100) / 100} kr</span>
+            </div>
+          ))}
+        </div>
+        <div className="divider my-3" />
         {order.discountCode && (
-          <div className="flex justify-between text-sm text-green-600 mb-1">
+          <div className="flex justify-between text-sm text-success font-medium mb-2">
             <span>Rabatt ({order.discountCode} – {order.discountPercent}%)</span>
             <span>Inkludert</span>
           </div>
         )}
-        <div className="flex justify-between font-bold">
+        <div className="flex justify-between font-bold text-base">
           <span>Totalt inkl. mva</span>
           <span>{order.total} kr</span>
         </div>
       </div>
 
-      <div className="border rounded-lg p-4 bg-white">
-        <h2 className="font-semibold mb-3">Ordrestatus</h2>
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5">
+        <h2 className="font-semibold mb-3">Oppdater status</h2>
         <form action={updateStatus} className="flex gap-2 items-center">
           <select name="status" defaultValue={order.status} className="select select-bordered flex-1">
             {Object.entries(statusLabel).map(([value, label]) => (
