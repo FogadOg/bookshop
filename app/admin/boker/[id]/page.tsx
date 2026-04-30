@@ -1,12 +1,16 @@
 import { prisma } from "../../../../lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { auth } from "../../../../auth";
 
 export default async function RedigerBokPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth();
+  if (!session) redirect("/admin/logg-inn");
+
   const { id } = await params;
   const book = await prisma.book.findUnique({ where: { id } });
   if (!book) notFound();

@@ -2,6 +2,7 @@ import { prisma } from "../../../../lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { OrderStatus } from "@prisma/client";
+import { auth } from "../../../../auth";
 
 const statusLabel: Record<string, string> = {
   NY: "Ny",
@@ -15,6 +16,9 @@ export default async function OrdreDetaljPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth();
+  if (!session) redirect("/admin/logg-inn");
+
   const { id } = await params;
   const order = await prisma.order.findUnique({
     where: { id },

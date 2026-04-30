@@ -1,5 +1,7 @@
 import { prisma } from "../../../lib/prisma";
 import Link from "next/link";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 
 const statusLabel: Record<string, string> = {
   NY: "Ny",
@@ -16,6 +18,9 @@ const statusColor: Record<string, string> = {
 };
 
 export default async function OrdrePage() {
+  const session = await auth();
+  if (!session) redirect("/admin/logg-inn");
+
   const orders = await prisma.order.findMany({
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { items: true } } },

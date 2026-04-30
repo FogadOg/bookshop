@@ -1,8 +1,11 @@
 import { prisma } from "../../../../lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { auth } from "../../../../auth";
 
-export default function NyBokPage() {
+export default async function NyBokPage() {
+  const session = await auth();
+  if (!session) redirect("/admin/logg-inn");
   async function create(formData: FormData) {
     "use server";
     await prisma.book.create({

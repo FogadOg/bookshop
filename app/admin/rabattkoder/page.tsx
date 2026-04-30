@@ -1,8 +1,13 @@
 import { prisma } from "../../../lib/prisma";
 import Link from "next/link";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 import { createDiscountCode, toggleDiscountCode, deleteDiscountCode } from "./actions";
 
 export default async function RabattkoderPage() {
+  const session = await auth();
+  if (!session) redirect("/admin/logg-inn");
+
   const codes = await prisma.discountCode.findMany({ orderBy: { code: "asc" } });
 
   return (

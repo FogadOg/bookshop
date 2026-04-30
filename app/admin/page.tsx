@@ -1,8 +1,12 @@
 import { prisma } from "../../lib/prisma";
 import Link from "next/link";
-import { signOut } from "../../auth";
+import { signOut, auth } from "../../auth";
+import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
+  const session = await auth();
+  if (!session) redirect("/admin/logg-inn");
+
   const [books, orderCount] = await Promise.all([
     prisma.book.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.order.count(),
