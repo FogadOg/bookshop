@@ -26,10 +26,19 @@ async function fetchBookByIsbn(isbn: string): Promise<Partial<BookFields> | null
 }
 
 export default function CreateBookForm() {
+  const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [fetching, setFetching] = useState(false);
   const [fields, setFields] = useState<Partial<BookFields>>({});
   const isbnRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const formData = new FormData(e.currentTarget);
+    const result = await createBook(formData);
+    if (result) setError(result);
+  }
 
   async function handleIsbnLookup() {
     const isbn = isbnRef.current?.value.trim();
@@ -46,7 +55,10 @@ export default function CreateBookForm() {
   }
 
   return (
-    <form action={createBook} className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 flex flex-col gap-4">
+      {error && (
+        <div className="alert alert-error text-sm">{error}</div>
+      )}
       <input type="hidden" name="imageUrl" value={fields.imageUrl ?? ""} />
 
       <div>
