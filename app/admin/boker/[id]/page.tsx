@@ -2,11 +2,11 @@ import { prisma } from "../../../../lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "../../../../auth";
-import RedigerBokForm from "./RedigerBokForm";
+import EditBookForm from "./EditBookForm";
 
 export const dynamic = "force-dynamic";
 
-export default async function RedigerBokPage({
+export default async function EditBookPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -21,10 +21,10 @@ export default async function RedigerBokPage({
   return (
     <main className="max-w-2xl mx-auto px-6 py-10">
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin" className="btn btn-ghost btn-sm">Tilbake</Link>
-        <h1 className="text-2xl font-bold tracking-tight">Rediger bok</h1>
+        <Link href="/admin" className="btn btn-ghost btn-sm">Back</Link>
+        <h1 className="text-2xl font-bold tracking-tight">Edit book</h1>
       </div>
-      <RedigerBokForm book={book} />
+      <EditBookForm book={book} />
     </main>
   );
 }
