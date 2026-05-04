@@ -18,7 +18,26 @@ export async function createOrder(items: CartItem[], formData: FormData) {
   const address = formData.get("address") as string;
   const discountCodeInput = (formData.get("discountCode") as string)?.trim().toUpperCase();
 
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  // Reject invalid quantities from the client
+  if (items.some((i) => !Number.isInteger(i.quantity) || i.quantity < 1)) {
+    throw new Error("Invalid quantity");
+  }
+
+  // Re-fetch prices and stock from the database — never trust client-supplied values
+  const bookIds = items.map((i) => i.bookId);
+  const books = await prisma.book.findMany({ where: { id: { in: bookIds } } });
+
+  // Reject if any bookId doesn't exist or quantity exceeds available stock
+  for (const item of items) {
+    const book = books.find((b) => b.id === item.bookId);
+    if (!book) throw new Error("Book not found");
+    if (item.quantity > book.stock) throw new Error("Insufficient stock");
+  }
+
+  const subtotal = items.reduce((sum, item) => {
+    const book = books.find((b) => b.id === item.bookId)!;
+    return sum + book.price * item.quantity;
+  }, 0);
 
   let discountPercent = 0;
   if (discountCodeInput) {
@@ -41,11 +60,10 @@ export async function createOrder(items: CartItem[], formData: FormData) {
         discountCode: discountPercent > 0 ? discountCodeInput : null,
         discountPercent: discountPercent > 0 ? discountPercent : null,
         items: {
-          create: items.map((i) => ({
-            bookId: i.bookId,
-            quantity: i.quantity,
-            price: i.price,
-          })),
+          create: items.map((i) => {
+            const book = books.find((b) => b.id === i.bookId)!;
+            return { bookId: i.bookId, quantity: i.quantity, price: book.price };
+          }),
         },
       },
     }),
@@ -61,7 +79,10 @@ export async function createOrder(items: CartItem[], formData: FormData) {
     to: customerEmail,
     customerName,
     orderId: order.id,
-    items: items.map((i) => ({ title: i.title, quantity: i.quantity, price: i.price })),
+    items: items.map((i) => {
+      const book = books.find((b) => b.id === i.bookId)!;
+      return { title: book.title, quantity: i.quantity, price: book.price };
+    }),
     total,
     discountCode: discountPercent > 0 ? discountCodeInput : null,
     discountPercent: discountPercent > 0 ? discountPercent : null,
