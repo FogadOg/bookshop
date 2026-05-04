@@ -19,9 +19,9 @@ const statusColor: Record<string, string> = {
   KANSELLERT: "badge-error",
 };
 
-export default async function OrdrePage() {
+export default async function OrdersPage() {
   const session = await auth();
-  if (!session) redirect("/admin/logg-inn");
+  if (!session) redirect("/admin/login");
 
   const orders = await prisma.order.findMany({
     orderBy: { createdAt: "desc" },
@@ -67,7 +67,7 @@ export default async function OrdrePage() {
                   {order.createdAt.toLocaleDateString("nb-NO")}
                 </td>
                 <td>
-                  <Link href={`/admin/ordre/${order.id}`} className="btn btn-ghost btn-xs">
+                  <Link href={`/admin/orders/${order.id}`} className="btn btn-ghost btn-xs">
                     Se detaljer →
                   </Link>
                 </td>

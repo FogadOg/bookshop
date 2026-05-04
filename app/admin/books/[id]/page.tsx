@@ -12,7 +12,7 @@ export default async function EditBookPage({
   params: Promise<{ id: string }>;
 }) {
   const session = await auth();
-  if (!session) redirect("/admin/logg-inn");
+  if (!session) redirect("/admin/login");
 
   const { id } = await params;
   const book = await prisma.book.findUnique({ where: { id } });

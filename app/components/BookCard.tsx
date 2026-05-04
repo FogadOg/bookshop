@@ -17,7 +17,7 @@ export default function BookCard({ book }: { book: Book }) {
 
   return (
     <Link
-      href={`/boker/${book.id}`}
+      href={`/books/${book.id}`}
       className="card bg-white border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col"
     >
       {book.imageUrl && (

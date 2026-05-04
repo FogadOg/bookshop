@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
 
-export default function HandlekurvPage() {
+export default function CartPage() {
   const { items, removeFromCart, updateQuantity, totalPrice } = useCart();
 
   if (items.length === 0) {

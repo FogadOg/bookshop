@@ -20,13 +20,13 @@ const statusColor: Record<string, string> = {
   KANSELLERT: "badge-error",
 };
 
-export default async function OrdreDetaljPage({
+export default async function OrderDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const session = await auth();
-  if (!session) redirect("/admin/logg-inn");
+  if (!session) redirect("/admin/login");
 
   const { id } = await params;
   const order = await prisma.order.findUnique({
@@ -39,13 +39,13 @@ export default async function OrdreDetaljPage({
     "use server";
     const status = formData.get("status") as OrderStatus;
     await prisma.order.update({ where: { id }, data: { status } });
-    redirect(`/admin/ordre/${id}`);
+    redirect(`/admin/orders/${id}`);
   }
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-10">
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin/ordre" className="btn btn-ghost btn-sm">Tilbake</Link>
+        <Link href="/admin/orders" className="btn btn-ghost btn-sm">Tilbake</Link>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Ordre detaljer</h1>
           <p className="text-sm text-gray-400 font-mono mt-0.5">{order.id.slice(-8).toUpperCase()}</p>

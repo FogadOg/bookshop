@@ -10,15 +10,15 @@ export async function createDiscountCode(formData: FormData) {
   if (!code || isNaN(percent) || percent < 1 || percent > 100) return;
 
   await prisma.discountCode.create({ data: { code, percent } });
-  revalidatePath("/admin/rabattkoder");
+  revalidatePath("/admin/discount-codes");
 }
 
 export async function toggleDiscountCode(id: string, active: boolean) {
   await prisma.discountCode.update({ where: { id }, data: { active } });
-  revalidatePath("/admin/rabattkoder");
+  revalidatePath("/admin/discount-codes");
 }
 
 export async function deleteDiscountCode(id: string) {
   await prisma.discountCode.delete({ where: { id } });
-  revalidatePath("/admin/rabattkoder");
+  revalidatePath("/admin/discount-codes");
 }

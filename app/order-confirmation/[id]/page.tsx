@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ClearCart from "./ClearCart";
 
-export default async function OrdreBekreftelserPage({
+export default async function OrderConfirmationPage({
   params,
 }: {
   params: Promise<{ id: string }>;

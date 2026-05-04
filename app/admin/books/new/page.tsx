@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function NewBookPage() {
   const session = await auth();
-  if (!session) redirect("/admin/logg-inn");
+  if (!session) redirect("/admin/login");
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-10">

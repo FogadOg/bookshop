@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const session = await auth();
-  if (!session) redirect("/admin/logg-inn");
+  if (!session) redirect("/admin/login");
 
   const [books, orderCount] = await Promise.all([
     prisma.book.findMany({ orderBy: { createdAt: "desc" } }),
@@ -22,14 +22,14 @@ export default async function AdminPage() {
           <p className="text-sm text-gray-400 mt-0.5">Bokhandelen</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/admin/ordre" className="btn btn-outline btn-sm">
+          <Link href="/admin/orders" className="btn btn-outline btn-sm">
             Ordre
             <span className="badge badge-neutral badge-sm ml-1">{orderCount}</span>
           </Link>
-          <Link href="/admin/rabattkoder" className="btn btn-outline btn-sm">
+          <Link href="/admin/discount-codes" className="btn btn-outline btn-sm">
             Rabattkoder
           </Link>
-          <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/admin/logg-inn"); }}>
+          <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/admin/login"); }}>
             <button className="btn btn-ghost btn-sm text-gray-400">Logg ut</button>
           </form>
         </div>
@@ -37,7 +37,7 @@ export default async function AdminPage() {
 
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold">Bøker ({books.length})</h2>
-        <Link href="/admin/boker/ny" className="btn btn-neutral btn-sm">+ Ny bok</Link>
+        <Link href="/admin/books/new" className="btn btn-neutral btn-sm">+ New book</Link>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
@@ -65,7 +65,7 @@ export default async function AdminPage() {
                 </td>
                 <td><span className="badge badge-ghost badge-sm">{book.category}</span></td>
                 <td>
-                  <Link href={`/admin/boker/${book.id}`} className="btn btn-ghost btn-xs">Rediger</Link>
+                  <Link href={`/admin/books/${book.id}`} className="btn btn-ghost btn-xs">Rediger</Link>
                 </td>
               </tr>
             ))}

@@ -88,7 +88,7 @@ export async function createOrder(items: CartItem[], formData: FormData) {
     discountPercent: discountPercent > 0 ? discountPercent : null,
   }).catch((err) => console.error("Failed to send order confirmation email:", err));
 
-  redirect(`/ordre-bekreftelse/${order.id}`);
+  redirect(`/order-confirmation/${order.id}`);
 }
 
 export async function validateDiscountCode(code: string): Promise<number | null> {

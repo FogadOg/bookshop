@@ -12,7 +12,7 @@ export default function Navbar() {
         <Link href="/" className="text-xl font-bold">Bokhandelen</Link>
       </div>
       <div className="flex-none">
-        <Link href="/handlekurv" className="btn btn-ghost btn-circle indicator">
+        <Link href="/cart" className="btn btn-ghost btn-circle indicator">
           {totalItems > 0 && (
             <span className="indicator-item badge badge-neutral badge-sm">{totalItems}</span>
           )}

@@ -6,9 +6,9 @@ import { createDiscountCode, toggleDiscountCode, deleteDiscountCode } from "./ac
 
 export const dynamic = "force-dynamic";
 
-export default async function RabattkoderPage() {
+export default async function DiscountCodesPage() {
   const session = await auth();
-  if (!session) redirect("/admin/logg-inn");
+  if (!session) redirect("/admin/login");
 
   const codes = await prisma.discountCode.findMany({ orderBy: { code: "asc" } });
 
