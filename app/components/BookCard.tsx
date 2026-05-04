@@ -21,7 +21,7 @@ export default function BookCard({ book }: { book: Book }) {
       className="card bg-white border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col"
     >
       {book.imageUrl && (
-        <img src={book.imageUrl} alt={book.title} className="rounded-t-xl w-full h-48 object-cover" />
+        <img src={book.imageUrl} alt={book.title} className="rounded-t-xl w-full h-48 object-contain bg-gray-50" />
       )}
       <div className="card-body gap-2 p-5 flex flex-col flex-1">
         <span className="badge badge-neutral badge-sm w-fit">{book.category}</span>

@@ -17,7 +17,7 @@ export default async function BokDetaljPage({
       <Link href="/" className="btn btn-ghost btn-sm mb-6">← Tilbake</Link>
 
       {book.imageUrl && (
-        <img src={book.imageUrl} alt={book.title} className="rounded-xl w-full max-h-72 object-cover mb-6" />
+        <img src={book.imageUrl} alt={book.title} className="rounded-xl w-full object-contain mb-6" />
       )}
       <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6">
         <span className="badge badge-neutral badge-sm mb-3">{book.category}</span>
