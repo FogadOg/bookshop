@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { OrderStatus } from "@prisma/client";
 import { auth } from "../../../../auth";
+import StatusForm from "./StatusForm";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export default async function OrderDetailPage({
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-10">
+    <main className="max-w-2xl mx-auto px-6 py-10 w-full">
       <div className="flex items-center gap-4 mb-8">
         <Link href="/admin/orders" className="btn btn-ghost btn-sm">Tilbake</Link>
         <div>
@@ -90,14 +91,7 @@ export default async function OrderDetailPage({
 
       <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5">
         <h2 className="font-semibold mb-3">Oppdater status</h2>
-        <form action={updateStatus} className="flex gap-2 items-center">
-          <select name="status" defaultValue={order.status} className="select select-bordered flex-1">
-            {Object.entries(statusLabel).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-          <button type="submit" className="btn btn-neutral">Oppdater</button>
-        </form>
+        <StatusForm currentStatus={order.status} updateStatus={updateStatus} />
       </div>
     </main>
   );
