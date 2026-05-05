@@ -18,7 +18,7 @@ export default async function OrderConfirmationPage({
   if (!order) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-10">
+    <main className="max-w-2xl mx-auto px-6 py-10 w-full">
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success/10 text-success text-3xl mb-4">✓</div>
         <h1 className="text-2xl font-bold">Bestilling bekreftet!</h1>
@@ -51,9 +51,9 @@ export default async function OrderConfirmationPage({
             <span>Inkludert</span>
           </div>
         )}
-        <div className="flex justify-between font-bold text-base">
+        <div className="flex justify-between gap-4 font-bold text-base">
           <span>Totalt inkl. mva</span>
-          <span>{order.total} kr</span>
+          <span className="whitespace-nowrap">{order.total} kr</span>
         </div>
       </div>
 

@@ -55,7 +55,7 @@ export default function CheckoutPage() {
   const grandTotal = Math.round(discountedSubtotal * 1.25 * 100) / 100;
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-10">
+    <main className="max-w-2xl mx-auto px-6 py-10 w-full">
       <h1 className="text-2xl font-bold tracking-tight mb-6">Kasse</h1>
 
       <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-6">
@@ -101,14 +101,14 @@ export default function CheckoutPage() {
                 setDiscountPercent(null);
                 setDiscountError("");
               }}
-              className="input input-bordered flex-1"
+              className="input input-bordered flex-1 bg-white border border-gray-200"
               placeholder="F.eks. BOKHANDEL10"
             />
             <button
               type="button"
               onClick={handleValidateCode}
-              disabled={isValidating || !discountCode.trim()}
-              className="btn btn-outline"
+              disabled={isValidating || !discountCode.trim() || !!discountPercent}
+              className="btn bg-gray-800 text-white border-none hover:bg-gray-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed shrink-0"
             >
               {isValidating ? <span className="loading loading-spinner loading-sm" /> : "Bruk"}
             </button>
@@ -127,15 +127,15 @@ export default function CheckoutPage() {
           <h2 className="font-semibold">Leveringsinfo</h2>
           <div>
             <label className="label pt-0"><span className="label-text font-medium">Navn</span></label>
-            <input name="customerName" required className="input input-bordered w-full" placeholder="Ola Nordmann" />
+            <input name="customerName" required className="input input-bordered w-full bg-white border border-gray-200" placeholder="Ola Nordmann" />
           </div>
           <div>
             <label className="label pt-0"><span className="label-text font-medium">E-post</span></label>
-            <input name="customerEmail" type="email" required className="input input-bordered w-full" placeholder="ola@example.com" />
+            <input name="customerEmail" type="email" required className="input input-bordered w-full bg-white border border-gray-200" placeholder="ola@example.com" />
           </div>
           <div>
             <label className="label pt-0"><span className="label-text font-medium">Leveringsadresse</span></label>
-            <textarea name="address" required className="textarea textarea-bordered w-full" placeholder="Gateadresse, postnummer, by" rows={3} />
+            <textarea name="address" required className="textarea textarea-bordered w-full bg-white border border-gray-200" placeholder="Gateadresse, postnummer, by" rows={3} />
           </div>
         </div>
 
