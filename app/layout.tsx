@@ -7,13 +7,11 @@ import Navbar from "./components/Navbar";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
-  fallback: ["system-ui", "sans-serif"],
 });
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
-  fallback: ["monospace"],
 });
 
 export const metadata: Metadata = {
