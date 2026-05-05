@@ -2,6 +2,8 @@ import { prisma } from "../../../lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import AddToCartButton from "./AddToCartButton";
+import { formatPrice } from "../../../lib/format";
+import BackButton from "./BackButton";
 
 export default async function BokDetaljPage({
   params,
@@ -13,8 +15,8 @@ export default async function BokDetaljPage({
   if (!book) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-10">
-      <Link href="/" className="btn btn-ghost btn-sm mb-6">← Tilbake</Link>
+    <main className="w-full sm:max-w-2xl sm:mx-auto px-[10px] sm:px-6 py-10">
+      <BackButton />
 
       {book.imageUrl && (
         <img src={book.imageUrl} alt={book.title} className="rounded-xl w-full object-contain mb-6" />
@@ -41,7 +43,7 @@ export default async function BokDetaljPage({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold">{book.price} kr</span>
+          <span className="text-2xl font-bold">{formatPrice(book.price)} kr</span>
           <AddToCartButton book={{ bookId: book.id, title: book.title, price: book.price, stock: book.stock }} />
         </div>
       </div>

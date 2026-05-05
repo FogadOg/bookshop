@@ -32,7 +32,7 @@ export default async function Home({
   ]);
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-10 w-full">
+    <main className="w-full sm:max-w-5xl sm:mx-auto px-[10px] sm:px-6 py-10 w-full">
       <h1 className="text-3xl font-bold tracking-tight mb-8">Bokhandelen</h1>
 
       <SearchForm q={q ?? ""} category={category ?? ""} categories={categories} />

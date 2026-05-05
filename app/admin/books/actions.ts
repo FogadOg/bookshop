@@ -2,17 +2,19 @@
 
 import { prisma } from "../../../lib/prisma";
 import { redirect } from "next/navigation";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+
+const uploadsDir = path.join(process.cwd(), "public", "uploads");
 
 async function saveImage(file: File): Promise<string | null> {
   if (!file || file.size === 0) return null;
+  await mkdir(uploadsDir, { recursive: true });
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   const ext = file.name.split(".").pop();
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const filepath = path.join(process.cwd(), "public", "uploads", filename);
-  await writeFile(filepath, buffer);
+  await writeFile(path.join(uploadsDir, filename), buffer);
   return `/uploads/${filename}`;
 }
 
@@ -20,12 +22,12 @@ async function downloadImage(url: string): Promise<string | null> {
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
+    await mkdir(uploadsDir, { recursive: true });
     const buffer = Buffer.from(await res.arrayBuffer());
     const contentType = res.headers.get("content-type") ?? "image/jpeg";
     const ext = contentType.split("/")[1]?.split(";")[0] ?? "jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const filepath = path.join(process.cwd(), "public", "uploads", filename);
-    await writeFile(filepath, buffer);
+    await writeFile(path.join(uploadsDir, filename), buffer);
     return `/uploads/${filename}`;
   } catch {
     return null;

@@ -19,7 +19,7 @@ export default async function EditBookPage({
   if (!book) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-10">
+    <main className="w-full sm:max-w-2xl sm:mx-auto px-[10px] sm:px-6 py-10">
       <div className="flex items-center gap-4 mb-8">
         <Link href="/admin" className="btn btn-ghost btn-sm">Tilbake</Link>
         <h1 className="text-2xl font-bold tracking-tight">Rediger bok</h1>

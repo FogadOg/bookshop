@@ -23,6 +23,7 @@ const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -32,6 +33,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setItems([]);
     }
   }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2500);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   function save(transform: (prev: CartItem[]) => CartItem[]) {
     setItems((prev) => {
@@ -48,10 +55,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existing = prev.find((i) => i.bookId === book.bookId);
       if (existing) {
         if (existing.quantity >= book.stock) return prev;
+        setToast(book.title);
         return prev.map((i) =>
           i.bookId === book.bookId ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
+      setToast(book.title);
       return [...prev, { ...book, quantity: 1 }];
     });
   }
@@ -81,6 +90,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       value={{ items, addToCart, removeFromCart, updateQuantity, totalItems, totalPrice }}
     >
       {children}
+      {toast && (
+        <div className="toast toast-end z-50">
+          <div className="alert bg-neutral text-neutral-content shadow-md border-none">
+            <span>«{toast}» lagt i handlekurven</span>
+          </div>
+        </div>
+      )}
     </CartContext.Provider>
   );
 }

@@ -2,6 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ClearCart from "./ClearCart";
+import { formatPrice } from "../../../lib/format";
 
 export default async function OrderConfirmationPage({
   params,
@@ -18,7 +19,7 @@ export default async function OrderConfirmationPage({
   if (!order) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-10 w-full">
+    <main className="w-full sm:max-w-2xl sm:mx-auto px-[10px] sm:px-6 py-10 w-full">
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-success/10 text-success text-3xl mb-4">✓</div>
         <h1 className="text-2xl font-bold">Bestilling bekreftet!</h1>
@@ -40,7 +41,7 @@ export default async function OrderConfirmationPage({
           {order.items.map((item) => (
             <div key={item.id} className="flex justify-between text-sm">
               <span className="text-gray-600">{item.book.title} × {item.quantity}</span>
-              <span>{Math.round(item.price * item.quantity * 100) / 100} kr</span>
+              <span>{formatPrice(item.price * item.quantity)} kr</span>
             </div>
           ))}
         </div>
@@ -53,7 +54,7 @@ export default async function OrderConfirmationPage({
         )}
         <div className="flex justify-between gap-4 font-bold text-base">
           <span>Totalt inkl. mva</span>
-          <span className="whitespace-nowrap">{order.total} kr</span>
+          <span className="whitespace-nowrap">{formatPrice(order.total)} kr</span>
         </div>
       </div>
 

@@ -29,16 +29,35 @@ export default async function OrdersPage() {
   });
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-10">
-      <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin" className="btn btn-ghost btn-sm">Tilbake</Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Ordre</h1>
-          <p className="text-sm text-gray-400 mt-0.5">{orders.length} totalt</p>
-        </div>
+    <main className="w-full sm:max-w-5xl sm:mx-auto px-[10px] sm:px-6 py-10">
+      <div className="mb-8">
+        <Link href="/admin" className="btn btn-outline btn-sm mb-4">Tilbake</Link>
+        <h1 className="text-2xl font-bold tracking-tight">Ordre</h1>
+        <p className="text-sm text-gray-400 mt-0.5">{orders.length} totalt</p>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
+      {/* Mobile cards */}
+      <div className="flex flex-col gap-3 sm:hidden">
+        {orders.length === 0 && (
+          <p className="text-center text-gray-400 py-10">Ingen ordre ennå</p>
+        )}
+        {orders.map((order) => (
+          <Link key={order.id} href={`/admin/orders/${order.id}`} className="bg-white border border-gray-100 rounded-xl shadow-sm p-4 flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <p className="font-semibold">{order.customerName}</p>
+              <span className={`badge badge-sm ${statusColor[order.status]}`}>{statusLabel[order.status]}</span>
+            </div>
+            <p className="text-sm text-gray-500">{order.customerEmail}</p>
+            <div className="flex items-center justify-between mt-1 text-sm">
+              <span className="text-gray-400">{order.createdAt.toLocaleDateString("nb-NO")} · {order._count.items} bøker</span>
+              <span className="font-medium">{Number(order.total).toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kr</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden sm:block overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
         <table className="table bg-white">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
             <tr>
@@ -56,7 +75,7 @@ export default async function OrdersPage() {
               <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                 <td className="font-medium">{order.customerName}</td>
                 <td className="text-gray-500 text-sm">{order.customerEmail}</td>
-                <td className="font-medium">{order.total} kr</td>
+                <td className="font-medium">{Number(order.total).toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kr</td>
                 <td className="text-gray-500">{order._count.items}</td>
                 <td>
                   <span className={`badge badge-sm ${statusColor[order.status]}`}>
