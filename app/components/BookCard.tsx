@@ -31,7 +31,7 @@ export default function BookCard({ book }: { book: Book }) {
         <p className="text-sm text-gray-400 line-clamp-2">{book.description}</p>
         <div className="mt-auto pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-bold text-base">{formatPrice(book.price)} kr</span>
+            <span className="font-bold text-base">{formatPrice(book.price * 1.25)} kr</span>
             {book.stock === 0
               ? <span className="badge badge-error badge-sm">Utsolgt</span>
               : <span className="text-xs text-gray-400">Lager: {book.stock}</span>}

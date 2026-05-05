@@ -31,7 +31,7 @@ export default function CartPage() {
           <div key={item.bookId} className="flex flex-col sm:flex-row sm:items-center gap-3 bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
             <div className="flex-1 min-w-0">
               <p className="font-semibold truncate">{item.title}</p>
-              <p className="text-sm text-gray-400">{formatPrice(item.price)} kr per stk</p>
+              <p className="text-sm text-gray-400">{formatPrice(item.price * 1.25)} kr per stk inkl. mva</p>
             </div>
             <div className="flex items-center justify-between sm:justify-end gap-4">
               <div className="flex items-center gap-2">
@@ -51,7 +51,7 @@ export default function CartPage() {
                 </button>
               </div>
               <div className="text-right min-w-20">
-                <p className="font-bold">{formatPrice(item.price * item.quantity)} kr</p>
+                <p className="font-bold">{formatPrice(item.price * item.quantity * 1.25)} kr</p>
                 <button
                   className="text-xs text-error hover:underline mt-1"
                   onClick={() => removeFromCart(item.bookId)}
@@ -66,11 +66,11 @@ export default function CartPage() {
 
       <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-6">
         <div className="flex justify-between text-sm text-gray-500 mb-1">
-          <span>Subtotal eks. mva</span>
-          <span>{formatPrice(totalPrice)} kr</span>
+          <span>Subtotal inkl. mva</span>
+          <span>{formatPrice(totalPrice * 1.25)} kr</span>
         </div>
         <div className="flex justify-between text-sm text-gray-500 mb-3">
-          <span>MVA (25%)</span>
+          <span>Herav mva (25%)</span>
           <span>{formatPrice(totalPrice * 0.25)} kr</span>
         </div>
         <div className="divider my-0" />

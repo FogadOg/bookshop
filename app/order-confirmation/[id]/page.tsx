@@ -41,7 +41,7 @@ export default async function OrderConfirmationPage({
           {order.items.map((item) => (
             <div key={item.id} className="flex justify-between text-sm">
               <span className="text-gray-600">{item.book.title} × {item.quantity}</span>
-              <span>{formatPrice(item.price * item.quantity)} kr</span>
+              <span>{formatPrice(item.price * item.quantity * 1.25)} kr</span>
             </div>
           ))}
         </div>

@@ -65,7 +65,7 @@ export default function CheckoutPage() {
           {items.map((item) => (
             <div key={item.bookId} className="flex justify-between text-sm">
               <span className="text-gray-600">{item.title} × {item.quantity}</span>
-              <span>{formatPrice(item.price * item.quantity)} kr</span>
+              <span>{formatPrice(item.price * item.quantity * 1.25)} kr</span>
             </div>
           ))}
         </div>
@@ -73,15 +73,15 @@ export default function CheckoutPage() {
         {discountPercent && (
           <div className="flex justify-between text-sm text-success font-medium mb-2">
             <span>Rabatt ({discountPercent}%)</span>
-            <span>−{formatPrice(totalPrice * (discountPercent / 100))} kr</span>
+            <span>−{formatPrice(totalPrice * 1.25 * (discountPercent / 100))} kr</span>
           </div>
         )}
         <div className="flex justify-between text-sm text-gray-500 mb-1">
-          <span>Subtotal eks. mva</span>
-          <span>{formatPrice(discountedSubtotal)} kr</span>
+          <span>Subtotal inkl. mva</span>
+          <span>{formatPrice(grandTotal)} kr</span>
         </div>
         <div className="flex justify-between text-sm text-gray-500 mb-2">
-          <span>MVA (25%)</span>
+          <span>Herav mva (25%)</span>
           <span>{formatPrice(mva)} kr</span>
         </div>
         <div className="flex justify-between font-bold text-base">

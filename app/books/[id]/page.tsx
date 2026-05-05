@@ -43,7 +43,7 @@ export default async function BokDetaljPage({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold">{formatPrice(book.price)} kr</span>
+          <span className="text-2xl font-bold">{formatPrice(book.price * 1.25)} kr</span>
           <AddToCartButton book={{ bookId: book.id, title: book.title, price: book.price, stock: book.stock }} />
         </div>
       </div>
