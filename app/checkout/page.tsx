@@ -22,7 +22,7 @@ export default function CheckoutPage() {
           </svg>
         </div>
         <h1 className="text-2xl font-bold mb-2">Handlekurven er tom</h1>
-        <p className="text-gray-400 mb-6">Legg til noen bøker før du går til checkout.</p>
+        <p className="text-gray-400 mb-6">Legg til noen bøker før du går til kassen.</p>
         <Link href="/" className="btn btn-neutral">Gå til butikken</Link>
       </main>
     );
@@ -56,7 +56,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold tracking-tight mb-6">Checkout</h1>
+      <h1 className="text-2xl font-bold tracking-tight mb-6">Kasse</h1>
 
       <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 mb-6">
         <h2 className="font-semibold mb-3">Oppsummering</h2>

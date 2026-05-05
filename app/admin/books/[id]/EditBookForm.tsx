@@ -36,7 +36,7 @@ export default function EditBookForm({ book }: { book: Book }) {
     const result = await fetchBookByIsbn(isbn);
     setFetching(false);
     if (!result) {
-      alert("No book found for this ISBN.");
+      alert("Ingen bok funnet for dette ISBN-nummeret.");
       return;
     }
     setFetched(result);
@@ -56,7 +56,7 @@ export default function EditBookForm({ book }: { book: Book }) {
               name="isbn"
               required
               defaultValue={book.isbn}
-              className="input input-bordered flex-1"
+              className="input input-bordered flex-1 bg-white border border-gray-200"
             />
             <button
               type="button"
@@ -64,39 +64,39 @@ export default function EditBookForm({ book }: { book: Book }) {
               disabled={fetching}
               className="btn btn-outline btn-neutral"
             >
-              {fetching ? <span className="loading loading-spinner loading-sm" /> : "Fetch info"}
+              {fetching ? <span className="loading loading-spinner loading-sm" /> : "Hent info"}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="label pt-0"><span className="label-text font-medium">Title</span></label>
-          <input name="title" required key={fetched?.title} defaultValue={fetched?.title ?? book.title} className="input input-bordered w-full" />
+          <label className="label pt-0"><span className="label-text font-medium">Tittel</span></label>
+          <input name="title" required key={fetched?.title} defaultValue={fetched?.title ?? book.title} className="input input-bordered w-full bg-white border border-gray-200" />
         </div>
         <div>
-          <label className="label pt-0"><span className="label-text font-medium">Author</span></label>
-          <input name="author" required key={fetched?.author} defaultValue={fetched?.author ?? book.author} className="input input-bordered w-full" />
+          <label className="label pt-0"><span className="label-text font-medium">Forfatter</span></label>
+          <input name="author" required key={fetched?.author} defaultValue={fetched?.author ?? book.author} className="input input-bordered w-full bg-white border border-gray-200" />
         </div>
         <div>
-          <label className="label pt-0"><span className="label-text font-medium">Description</span></label>
-          <textarea name="description" required defaultValue={book.description} className="textarea textarea-bordered w-full" rows={3} />
+          <label className="label pt-0"><span className="label-text font-medium">Beskrivelse</span></label>
+          <textarea name="description" required defaultValue={book.description} className="textarea textarea-bordered w-full bg-white border border-gray-200" rows={3} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label pt-0"><span className="label-text font-medium">Price (kr)</span></label>
-            <input name="price" type="number" step="0.01" required defaultValue={book.price} className="input input-bordered w-full" />
+            <label className="label pt-0"><span className="label-text font-medium">Pris (kr)</span></label>
+            <input name="price" type="number" step="0.01" required defaultValue={book.price} className="input input-bordered w-full bg-white border border-gray-200" />
           </div>
           <div>
-            <label className="label pt-0"><span className="label-text font-medium">Stock</span></label>
-            <input name="stock" type="number" min="0" required defaultValue={book.stock} className="input input-bordered w-full" />
+            <label className="label pt-0"><span className="label-text font-medium">Lager</span></label>
+            <input name="stock" type="number" min="0" required defaultValue={book.stock} className="input input-bordered w-full bg-white border border-gray-200" />
           </div>
         </div>
         <div>
-          <label className="label pt-0"><span className="label-text font-medium">Category</span></label>
-          <input name="category" required defaultValue={book.category} className="input input-bordered w-full" />
+          <label className="label pt-0"><span className="label-text font-medium">Kategori</span></label>
+          <input name="category" required defaultValue={book.category} className="input input-bordered w-full bg-white border border-gray-200" />
         </div>
         <div>
-          <label className="label pt-0"><span className="label-text font-medium">Image (optional)</span></label>
+          <label className="label pt-0"><span className="label-text font-medium">Bilde (valgfritt)</span></label>
           {preview && (
             <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-lg mb-2" />
           )}
@@ -104,23 +104,23 @@ export default function EditBookForm({ book }: { book: Book }) {
             name="imageFile"
             type="file"
             accept="image/*"
-            className="file-input file-input-bordered w-full"
+            className="file-input file-input-bordered w-full bg-white border border-gray-200 file:bg-gray-100 file:text-gray-700 file:border-0 file:border-r file:border-gray-200"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) setPreview(URL.createObjectURL(file));
               else setPreview(currentImageUrl || null);
             }}
           />
-          <p className="text-xs text-gray-400 mt-1">Upload a file, or leave empty to use the cover from Open Library.</p>
+          <p className="text-xs text-gray-400 mt-1">Last opp en fil, eller la feltet være tomt for å bruke omslaget fra Open Library.</p>
         </div>
-        <button type="submit" className="btn btn-neutral mt-2">Save changes</button>
+        <button type="submit" className="btn btn-neutral mt-2">Lagre endringer</button>
       </form>
 
       <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5">
-        <h2 className="font-semibold text-error mb-1">Danger zone</h2>
-        <p className="text-sm text-gray-400 mb-3">This cannot be undone.</p>
+        <h2 className="font-semibold text-error mb-1">Faresone</h2>
+        <p className="text-sm text-gray-400 mb-3">Dette kan ikke angres.</p>
         <form action={remove}>
-          <button type="submit" className="btn btn-error btn-outline w-full">Delete book</button>
+          <button type="submit" className="btn btn-error btn-outline w-full">Slett bok</button>
         </form>
       </div>
     </>

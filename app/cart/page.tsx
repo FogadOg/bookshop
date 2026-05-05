@@ -78,7 +78,7 @@ export default function CartPage() {
       </div>
 
       <Link href="/checkout" className="btn btn-neutral w-full">
-        Gå til checkout →
+        Gå til kassen →
       </Link>
     </main>
   );

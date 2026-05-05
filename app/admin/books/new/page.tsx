@@ -12,8 +12,8 @@ export default async function NewBookPage() {
   return (
     <main className="max-w-2xl mx-auto px-6 py-10">
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin" className="btn btn-ghost btn-sm">Back</Link>
-        <h1 className="text-2xl font-bold tracking-tight">New book</h1>
+        <Link href="/admin" className="btn btn-ghost btn-sm">Tilbake</Link>
+        <h1 className="text-2xl font-bold tracking-tight">Ny bok</h1>
       </div>
       <CreateBookForm />
     </main>

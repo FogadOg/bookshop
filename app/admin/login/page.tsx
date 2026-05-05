@@ -46,11 +46,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
               <label className="label pt-0"><span className="label-text font-medium">E-post</span></label>
-              <input name="email" type="email" required className="input input-bordered w-full" placeholder="admin@bokhandelen.no" />
+              <input name="email" type="email" required className="input input-bordered w-full bg-white border border-gray-200" placeholder="admin@bokhandelen.no" />
             </div>
             <div>
               <label className="label pt-0"><span className="label-text font-medium">Passord</span></label>
-              <input name="password" type="password" required className="input input-bordered w-full" placeholder="••••••••" />
+              <input name="password" type="password" required className="input input-bordered w-full bg-white border border-gray-200" placeholder="••••••••" />
             </div>
             <button type="submit" disabled={isPending} className="btn btn-neutral w-full mt-2">
               {isPending ? <><span className="loading loading-spinner loading-sm" /> Logger inn...</> : "Logg inn"}

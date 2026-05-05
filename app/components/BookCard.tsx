@@ -18,17 +18,17 @@ export default function BookCard({ book }: { book: Book }) {
   return (
     <Link
       href={`/books/${book.id}`}
-      className="card bg-white border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col"
+      className="card bg-white border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col h-full"
     >
       {book.imageUrl && (
         <img src={book.imageUrl} alt={book.title} className="rounded-t-xl w-full h-48 object-contain bg-gray-50" />
       )}
-      <div className="card-body gap-2 p-5 flex flex-col flex-1">
+      <div className="card-body gap-2 p-5 flex flex-col flex-1 min-h-0">
         <span className="badge badge-neutral badge-sm w-fit">{book.category}</span>
         <h2 className="font-bold text-lg leading-snug">{book.title}</h2>
         <p className="text-sm text-gray-500">{book.author}</p>
-        <p className="text-sm text-gray-400 line-clamp-2 flex-1">{book.description}</p>
-        <div className="mt-3 pt-3 border-t border-gray-100">
+        <p className="text-sm text-gray-400 line-clamp-2">{book.description}</p>
+        <div className="mt-auto pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between mb-3">
             <span className="font-bold text-base">{book.price} kr</span>
             {book.stock === 0
@@ -40,7 +40,7 @@ export default function BookCard({ book }: { book: Book }) {
             disabled={book.stock === 0 || atStockLimit}
             className="btn btn-neutral btn-sm w-full"
           >
-            {book.stock === 0 ? "Utsolgt" : atStockLimit ? "Maks antall" : "Legg i handlekurv"}
+            {book.stock === 0 ? "Utsolgt" : "Legg i handlekurv"}
           </button>
         </div>
       </div>

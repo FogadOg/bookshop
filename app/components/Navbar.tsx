@@ -7,11 +7,9 @@ export default function Navbar() {
   const { totalItems } = useCart();
 
   return (
-    <nav className="navbar bg-white border-b px-8">
-      <div className="flex-1">
+    <nav className="bg-white border-b w-full">
+      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold">Bokhandelen</Link>
-      </div>
-      <div className="flex-none">
         <Link href="/cart" className="btn btn-ghost btn-circle indicator">
           {totalItems > 0 && (
             <span className="indicator-item badge badge-neutral badge-sm">{totalItems}</span>

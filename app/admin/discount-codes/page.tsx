@@ -30,7 +30,7 @@ export default async function DiscountCodesPage() {
             <input
               name="code"
               required
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-white border border-gray-200"
               placeholder="F.eks. BOKHANDEL10"
             />
           </div>
@@ -42,7 +42,7 @@ export default async function DiscountCodesPage() {
               required
               min={1}
               max={100}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full bg-white border border-gray-200"
               placeholder="10"
             />
           </div>
