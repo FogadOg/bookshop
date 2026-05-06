@@ -15,6 +15,8 @@ export async function createDiscountCode(formData: FormData) {
 
 export async function toggleDiscountCode(id: string, active: boolean) {
   await prisma.discountCode.update({ where: { id }, data: { active } });
+
+  // throw away the cached version so next request will see the updated active status
   revalidatePath("/admin/discount-codes");
 }
 

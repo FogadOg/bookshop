@@ -91,9 +91,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
       {toast && (
-        <div className="toast toast-end z-50">
-          <div className="alert bg-neutral text-neutral-content shadow-md border-none">
-            <span>«{toast}» lagt i handlekurven</span>
+        <div className="fixed bottom-6 right-6 z-50 animate-[fadeIn_0.2s_ease-out] max-w-sm">
+          <div
+            className="bg-surface border border-default text-[var(--foreground)] text-sm px-5 py-4 rounded-md shadow-lg flex items-start gap-3"
+            style={{ boxShadow: "0 8px 24px rgba(26,26,26,0.08)" }}
+          >
+            <span
+              className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] shrink-0 mt-0.5"
+              style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
+            >
+              ✓
+            </span>
+            <div>
+              <p className="font-medium leading-snug">Lagt i handlekurven</p>
+              <p className="text-muted text-xs mt-0.5 truncate">{toast}</p>
+            </div>
           </div>
         </div>
       )}

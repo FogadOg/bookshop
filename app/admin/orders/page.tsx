@@ -12,11 +12,11 @@ const statusLabel: Record<string, string> = {
   KANSELLERT: "Kansellert",
 };
 
-const statusColor: Record<string, string> = {
-  NY: "badge-info",
-  BEHANDLES: "badge-warning",
-  SENDT: "badge-success",
-  KANSELLERT: "badge-error",
+const statusStyle: Record<string, string> = {
+  NY: "bg-blue-50 text-blue-700",
+  BEHANDLES: "bg-amber-50 text-amber-700",
+  SENDT: "bg-emerald-50 text-emerald-700",
+  KANSELLERT: "bg-red-50 text-red-700",
 };
 
 export default async function OrdersPage() {
@@ -29,27 +29,44 @@ export default async function OrdersPage() {
   });
 
   return (
-    <main className="w-full sm:max-w-5xl sm:mx-auto px-[10px] sm:px-6 py-10">
-      <div className="mb-8">
-        <Link href="/admin" className="btn btn-outline btn-sm mb-4">Tilbake</Link>
-        <h1 className="text-2xl font-bold tracking-tight">Ordre</h1>
-        <p className="text-sm text-gray-400 mt-0.5">{orders.length} totalt</p>
+    <main className="w-full sm:max-w-6xl sm:mx-auto px-4 sm:px-8 py-12 sm:py-14">
+      <Link
+        href="/admin"
+        className="text-sm text-muted hover:text-accent transition-colors mb-6 inline-flex items-center gap-1.5"
+      >
+        <svg className="w-3.5 h-3.5" viewBox="0 0 12 12" fill="none">
+          <path d="M7.5 9.5L4 6L7.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        Tilbake
+      </Link>
+
+      <div className="mb-10 pb-6 border-b border-soft">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-accent mb-2">Admin</p>
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">Ordre</h1>
+        <p className="text-muted mt-1">{orders.length} totalt</p>
       </div>
 
+      {orders.length === 0 && (
+        <p className="text-center text-muted py-16">Ingen ordre ennå</p>
+      )}
+
       {/* Mobile cards */}
-      <div className="flex flex-col gap-3 sm:hidden">
-        {orders.length === 0 && (
-          <p className="text-center text-gray-400 py-10">Ingen ordre ennå</p>
-        )}
+      <div className="flex flex-col divide-y divide-[var(--border-soft)] border-y border-soft sm:hidden">
         {orders.map((order) => (
-          <Link key={order.id} href={`/admin/orders/${order.id}`} className="bg-white border border-gray-100 rounded-xl shadow-sm p-4 flex flex-col gap-1">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold">{order.customerName}</p>
-              <span className={`badge badge-sm ${statusColor[order.status]}`}>{statusLabel[order.status]}</span>
+          <Link
+            key={order.id}
+            href={`/admin/orders/${order.id}`}
+            className="py-4 flex flex-col gap-1.5 hover:opacity-70 transition-opacity"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-medium text-[var(--foreground)] truncate">{order.customerName}</p>
+              <span className={`text-[10px] uppercase tracking-wider font-medium px-2 py-0.5 rounded ${statusStyle[order.status]} shrink-0`}>
+                {statusLabel[order.status]}
+              </span>
             </div>
-            <p className="text-sm text-gray-500">{order.customerEmail}</p>
-            <div className="flex items-center justify-between mt-1 text-sm">
-              <span className="text-gray-400">{order.createdAt.toLocaleDateString("nb-NO")} · {order._count.items} bøker</span>
+            <p className="text-sm text-muted truncate">{order.customerEmail}</p>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-soft">{order.createdAt.toLocaleDateString("nb-NO")} · {order._count.items} bøker</span>
               <span className="font-medium">{Number(order.total).toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kr</span>
             </div>
           </Link>
@@ -57,46 +74,43 @@ export default async function OrdersPage() {
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
-        <table className="table bg-white">
-          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
-            <tr>
-              <th>Kunde</th>
-              <th>E-post</th>
-              <th>Totalt</th>
-              <th>Bøker</th>
-              <th>Status</th>
-              <th>Dato</th>
-              <th></th>
+      <div className="hidden sm:block">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs uppercase tracking-wider text-muted border-b border-default">
+              <th className="py-3 font-medium">Kunde</th>
+              <th className="py-3 font-medium">E-post</th>
+              <th className="py-3 font-medium">Status</th>
+              <th className="py-3 font-medium text-right">Bøker</th>
+              <th className="py-3 font-medium text-right">Totalt</th>
+              <th className="py-3 font-medium text-right">Dato</th>
+              <th className="py-3"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-[var(--border-soft)]">
             {orders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                <td className="font-medium">{order.customerName}</td>
-                <td className="text-gray-500 text-sm">{order.customerEmail}</td>
-                <td className="font-medium">{Number(order.total).toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kr</td>
-                <td className="text-gray-500">{order._count.items}</td>
-                <td>
-                  <span className={`badge badge-sm ${statusColor[order.status]}`}>
+              <tr key={order.id} className="hover:bg-[var(--accent-soft)]/20 transition-colors group">
+                <td className="py-3.5 font-medium">{order.customerName}</td>
+                <td className="py-3.5 text-muted">{order.customerEmail}</td>
+                <td className="py-3.5">
+                  <span className={`text-[10px] uppercase tracking-wider font-medium px-2 py-0.5 rounded ${statusStyle[order.status]}`}>
                     {statusLabel[order.status]}
                   </span>
                 </td>
-                <td className="text-sm text-gray-400">
-                  {order.createdAt.toLocaleDateString("nb-NO")}
-                </td>
-                <td>
-                  <Link href={`/admin/orders/${order.id}`} className="btn btn-ghost btn-xs">
-                    Se detaljer →
+                <td className="py-3.5 text-right text-muted">{order._count.items}</td>
+                <td className="py-3.5 text-right">{Number(order.total).toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kr</td>
+                <td className="py-3.5 text-right text-muted-soft">{order.createdAt.toLocaleDateString("nb-NO")}</td>
+                <td className="py-3.5 text-right">
+                  <Link
+                    href={`/admin/orders/${order.id}`}
+                    style={{ color: "var(--accent)" }}
+                    className="text-sm hover:underline"
+                  >
+                    Se detaljer
                   </Link>
                 </td>
               </tr>
             ))}
-            {orders.length === 0 && (
-              <tr>
-                <td colSpan={7} className="text-center text-gray-400 py-10">Ingen ordre ennå</td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>

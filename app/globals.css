@@ -1,21 +1,88 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: false;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAFAF7;
+  --foreground: #1A1A1A;
+  --muted: #6B6B6B;
+  --muted-soft: #9A9A9A;
+  --border: #E8E6E0;
+  --border-soft: #F0EEE8;
+  --accent: #B85C3F;
+  --accent-hover: #A04E33;
+  --accent-soft: #F5E6DF;
+  --surface: #FFFFFF;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-border-soft: var(--border-soft);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-
-body {
+html, body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.02em;
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: #FFFFFF;
+  border: none;
+  transition: background-color 0.15s ease;
+}
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+}
+.btn-accent:disabled {
+  background-color: #D4D2CC;
+  color: #8A8A8A;
+  cursor: not-allowed;
+}
+
+/* Use higher specificity to beat any framework defaults */
+.text-accent,
+[class~="text-accent"] { color: var(--accent) !important; }
+.bg-accent,
+[class~="bg-accent"] { background-color: var(--accent) !important; }
+.bg-accent-soft,
+[class~="bg-accent-soft"] { background-color: var(--accent-soft) !important; }
+.border-accent,
+[class~="border-accent"] { border-color: var(--accent) !important; }
+.hover\:text-accent:hover { color: var(--accent) !important; }
+.hover\:border-accent:hover { border-color: var(--accent) !important; }
+.hover\:bg-accent:hover { background-color: var(--accent) !important; }
+
+.text-muted { color: var(--muted) !important; }
+.text-muted-soft { color: var(--muted-soft) !important; }
+.border-soft { border-color: var(--border-soft) !important; }
+.border-default { border-color: var(--border) !important; }
+.bg-surface { background-color: var(--surface) !important; }
+
+.input-clean {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+.input-clean:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }

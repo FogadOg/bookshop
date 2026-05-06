@@ -9,16 +9,19 @@ type Props = {
 export default function AddToCartButton({ book }: Props) {
   const { addToCart } = useCart();
 
-  function handleAdd() {
-    addToCart(book);
-  }
-
   if (book.stock === 0) {
-    return <button className="btn btn-disabled" disabled>Utsolgt</button>;
+    return (
+      <button className="btn-accent px-5 py-2.5 rounded text-sm font-medium" disabled>
+        Utsolgt
+      </button>
+    );
   }
 
   return (
-    <button className="btn btn-neutral" onClick={handleAdd}>
+    <button
+      className="btn-accent px-5 py-2.5 rounded text-sm font-medium"
+      onClick={() => addToCart(book)}
+    >
       Legg i handlekurv
     </button>
   );

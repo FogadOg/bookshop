@@ -32,19 +32,27 @@ export default async function Home({
   ]);
 
   return (
-    <main className="w-full sm:max-w-5xl sm:mx-auto px-[10px] sm:px-6 py-10 w-full">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Bokhandelen</h1>
+    <main className="w-full sm:max-w-6xl sm:mx-auto px-4 sm:px-8 py-12 sm:py-16">
+      <header className="mb-10 sm:mb-14 max-w-2xl">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-accent mb-3">Norsk bokhandel</p>
+        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] mb-4">
+          Bøker til gode lesestunder
+        </h1>
+        <p className="text-muted text-base leading-relaxed">
+          Et nøye utvalgt sortiment av skjønnlitteratur, sakprosa og barnebøker — sendt rett hjem til deg.
+        </p>
+      </header>
 
       <SearchForm q={q ?? ""} category={category ?? ""} categories={categories} />
 
       <div className="min-h-[60vh]">
         {books.length === 0 ? (
-          <div className="text-center py-24 text-gray-400">
-            <p className="text-lg font-medium">Ingen bøker funnet</p>
-            <p className="text-sm mt-1">Prøv et annet søk eller kategori</p>
+          <div className="text-center py-24">
+            <p className="text-lg text-[var(--foreground)] mb-1">Ingen bøker funnet</p>
+            <p className="text-sm text-muted">Prøv et annet søk eller kategori</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 items-stretch">
             {books.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}

@@ -16,80 +16,99 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <main className="w-full sm:max-w-5xl sm:mx-auto px-[10px] sm:px-6 py-10">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
+    <main className="w-full sm:max-w-6xl sm:mx-auto px-4 sm:px-8 py-12 sm:py-14">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12 pb-6 border-b border-soft">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Bokhandelen</p>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-accent mb-2">Admin</p>
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">Oversikt</h1>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/admin/orders" className="btn btn-outline btn-sm">
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link href="/admin/orders" className="px-3 py-1.5 bg-surface border border-default rounded hover:border-accent hover:text-accent transition-colors flex items-center gap-2 text-[var(--foreground)]">
             Ordre
-            <span className="badge badge-neutral badge-sm ml-1">{orderCount}</span>
+            <span className="bg-accent text-white text-[10px] font-medium rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+              {orderCount}
+            </span>
           </Link>
-          <Link href="/admin/discount-codes" className="btn btn-outline btn-sm">
+          <Link href="/admin/discount-codes" className="px-3 py-1.5 bg-surface border border-default rounded hover:border-accent hover:text-accent transition-colors text-[var(--foreground)]">
             Rabattkoder
           </Link>
           <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/admin/login"); }}>
-            <button className="btn btn-ghost btn-sm text-gray-400">Logg ut</button>
+            <button className="px-3 py-1.5 border border-default rounded text-muted hover:border-accent hover:text-accent transition-colors bg-surface">
+              Logg ut
+            </button>
           </form>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-semibold">Bøker ({books.length})</h2>
-        <Link href="/admin/books/new" className="btn btn-neutral btn-sm">+ Ny bok</Link>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-sm uppercase tracking-wider text-muted">Bøker ({books.length})</h2>
+        <Link href="/admin/books/new" className="btn-accent text-sm font-medium px-4 py-2 rounded">
+          + Ny bok
+        </Link>
       </div>
 
       {/* Mobile cards */}
-      <div className="flex flex-col gap-3 sm:hidden">
+      <div className="flex flex-col divide-y divide-[var(--border-soft)] border-y border-soft sm:hidden">
         {books.map((book) => (
-          <Link key={book.id} href={`/admin/books/${book.id}`} className="bg-white border border-gray-100 rounded-xl shadow-sm p-4 flex items-center gap-3 overflow-hidden">
+          <Link
+            key={book.id}
+            href={`/admin/books/${book.id}`}
+            className="flex items-center gap-3 py-4 hover:opacity-70 transition-opacity"
+          >
+            <div className="w-12 h-16 bg-[var(--accent-soft)]/30 rounded shrink-0 overflow-hidden">
+              {book.imageUrl && (
+                <img src={book.imageUrl} alt="" className="w-full h-full object-contain p-1" />
+              )}
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">{book.title}</p>
-              <p className="text-sm text-gray-500 truncate">{book.author}</p>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <span className="badge badge-sm bg-gray-100 text-gray-600 border-0">{book.category}</span>
-                {book.stock === 0
-                  ? <span className="badge badge-error badge-sm">Utsolgt</span>
-                  : <span className="text-xs text-gray-400">Lager: {book.stock}</span>}
+              <p className="font-medium text-sm truncate">{book.title}</p>
+              <p className="text-xs text-muted truncate">{book.author}</p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-[10px] uppercase tracking-wider text-muted-soft">{book.category}</span>
+                {book.stock === 0 && <span className="text-[10px] text-accent">Utsolgt</span>}
               </div>
             </div>
-            <div className="text-right shrink-0 flex flex-col items-end gap-1">
+            <div className="text-right shrink-0">
               <p className="font-medium text-sm">{formatPrice(book.price)} kr</p>
-              <span className="text-xs text-gray-400">Rediger →</span>
+              <p className="text-xs text-muted-soft">Lager: {book.stock}</p>
             </div>
           </Link>
         ))}
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
-        <table className="table bg-white">
-          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
-            <tr>
-              <th>Tittel</th>
-              <th>Forfatter</th>
-              <th>Pris</th>
-              <th>Lager</th>
-              <th>Kategori</th>
-              <th></th>
+      <div className="hidden sm:block">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs uppercase tracking-wider text-muted border-b border-default">
+              <th className="py-3 font-medium">Tittel</th>
+              <th className="py-3 font-medium">Forfatter</th>
+              <th className="py-3 font-medium">Kategori</th>
+              <th className="py-3 font-medium text-right">Pris</th>
+              <th className="py-3 font-medium text-right">Lager</th>
+              <th className="py-3"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-[var(--border-soft)]">
             {books.map((book) => (
-              <tr key={book.id} className="hover:bg-gray-50 transition-colors">
-                <td className="font-medium">{book.title}</td>
-                <td className="text-gray-500">{book.author}</td>
-                <td>{formatPrice(book.price)} kr</td>
-                <td>
+              <tr key={book.id} className="hover:bg-[var(--accent-soft)]/20 transition-colors group">
+                <td className="py-3.5 font-medium">{book.title}</td>
+                <td className="py-3.5 text-muted">{book.author}</td>
+                <td className="py-3.5 text-muted">{book.category}</td>
+                <td className="py-3.5 text-right">{formatPrice(book.price)} kr</td>
+                <td className="py-3.5 text-right">
                   {book.stock === 0
-                    ? <span className="badge badge-error badge-sm">Utsolgt</span>
-                    : <span className="text-sm">{book.stock}</span>}
+                    ? <span className="text-accent">Utsolgt</span>
+                    : <span>{book.stock}</span>}
                 </td>
-                <td><span className="badge badge-sm bg-gray-100 text-gray-600 border-0">{book.category}</span></td>
-                <td>
-                  <Link href={`/admin/books/${book.id}`} className="btn btn-ghost btn-xs">Rediger</Link>
+                <td className="py-3.5 text-right">
+                  <Link
+                    href={`/admin/books/${book.id}`}
+                    style={{ color: "var(--accent)" }}
+                    className="text-sm hover:underline"
+                  >
+                    Rediger
+                  </Link>
                 </td>
               </tr>
             ))}

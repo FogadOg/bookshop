@@ -31,32 +31,34 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <main className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold tracking-tight">Bokhandelen</h1>
-          <p className="text-gray-400 text-sm mt-1">Admin</p>
+        <div className="text-center mb-10">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-accent mb-2">Admin</p>
+          <h1 className="text-3xl font-semibold tracking-tight">Bokhandelen</h1>
         </div>
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8">
-          {error && (
-            <div className="alert alert-error mb-4 text-sm py-2">
-              <span>{error}</span>
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div>
-              <label className="label pt-0"><span className="label-text font-medium">E-post</span></label>
-              <input name="email" type="email" required className="input input-bordered w-full bg-white border border-gray-200" placeholder="admin@bokhandelen.no" />
-            </div>
-            <div>
-              <label className="label pt-0"><span className="label-text font-medium">Passord</span></label>
-              <input name="password" type="password" required className="input input-bordered w-full bg-white border border-gray-200" placeholder="••••••••" />
-            </div>
-            <button type="submit" disabled={isPending} className="btn btn-neutral w-full mt-2">
-              {isPending ? <><span className="loading loading-spinner loading-sm" /> Logger inn...</> : "Logg inn"}
-            </button>
-          </form>
-        </div>
+        {error && (
+          <div className="bg-accent-soft text-accent text-sm py-2.5 px-4 rounded mb-4 text-center">
+            {error}
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label className="block">
+            <span className="text-sm text-[var(--foreground)] mb-1.5 block">E-post</span>
+            <input name="email" type="email" required className="input-clean" placeholder="admin@bokhandelen.no" />
+          </label>
+          <label className="block">
+            <span className="text-sm text-[var(--foreground)] mb-1.5 block">Passord</span>
+            <input name="password" type="password" required className="input-clean" placeholder="••••••••" />
+          </label>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="btn-accent w-full py-2.5 rounded text-sm font-medium mt-2"
+          >
+            {isPending ? "Logger inn..." : "Logg inn"}
+          </button>
+        </form>
       </div>
     </main>
   );

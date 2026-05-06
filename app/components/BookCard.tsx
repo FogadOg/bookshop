@@ -19,29 +19,40 @@ export default function BookCard({ book }: { book: Book }) {
   return (
     <Link
       href={`/books/${book.id}`}
-      className="card bg-white border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col h-full"
+      className="group flex flex-col h-full"
     >
-      {book.imageUrl && (
-        <img src={book.imageUrl} alt={book.title} className="rounded-t-xl w-full h-48 object-contain bg-gray-50" />
-      )}
-      <div className="card-body gap-2 p-5 flex flex-col flex-1 min-h-0">
-        <span className="badge badge-neutral badge-sm w-fit">{book.category}</span>
-        <h2 className="font-bold text-lg leading-snug">{book.title}</h2>
-        <p className="text-sm text-gray-500">{book.author}</p>
-        <p className="text-sm text-gray-400 line-clamp-2">{book.description}</p>
-        <div className="mt-auto pt-3 border-t border-gray-100">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-bold text-base">{formatPrice(book.price * 1.25)} kr</span>
-            {book.stock === 0
-              ? <span className="badge badge-error badge-sm">Utsolgt</span>
-              : <span className="text-xs text-gray-400">Lager: {book.stock}</span>}
+      <div className="relative overflow-hidden rounded-md bg-[var(--accent-soft)]/30 aspect-[3/4] mb-4">
+        {book.imageUrl ? (
+          <img
+            src={book.imageUrl}
+            alt={book.title}
+            className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-muted-soft text-xs">
+            Ingen omslag
           </div>
+        )}
+        {book.stock === 0 && (
+          <div className="absolute top-3 right-3 bg-[var(--foreground)] text-white text-[10px] uppercase tracking-wider px-2 py-1 rounded">
+            Utsolgt
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col flex-1">
+        <p className="text-[11px] uppercase tracking-wider text-muted-soft mb-1.5">{book.category}</p>
+        <h2 className="font-medium text-base leading-snug text-[var(--foreground)] group-hover:text-accent transition-colors">
+          {book.title}
+        </h2>
+        <p className="text-sm text-muted mt-0.5 mb-3">{book.author}</p>
+        <div className="mt-auto flex items-center justify-between gap-3">
+          <span className="font-medium text-[var(--foreground)]">{formatPrice(book.price * 1.25)} kr</span>
           <button
             onClick={handleAddToCart}
             disabled={book.stock === 0 || atStockLimit}
-            className="btn btn-neutral btn-sm w-full"
+            className="btn-accent text-xs font-medium px-3 py-1.5 rounded"
           >
-            {book.stock === 0 ? "Utsolgt" : "Legg i handlekurv"}
+            {book.stock === 0 ? "Utsolgt" : "Legg til"}
           </button>
         </div>
       </div>
