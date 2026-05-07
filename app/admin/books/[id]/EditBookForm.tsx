@@ -22,6 +22,7 @@ export default function EditBookForm({ book }: { book: Book }) {
   const [preview, setPreview] = useState<string | null>(book.imageUrl ?? null);
   const [fetching, setFetching] = useState(false);
   const [fetched, setFetched] = useState<{ title: string; author: string; imageUrl: string } | null>(null);
+  const [fetchCount, setFetchCount] = useState(0);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const isbnRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +47,7 @@ export default function EditBookForm({ book }: { book: Book }) {
       return;
     }
     setFetched(result);
+    setFetchCount((c) => c + 1);
     if (result.imageUrl) setPreview(result.imageUrl);
   }
 
@@ -75,10 +77,10 @@ export default function EditBookForm({ book }: { book: Book }) {
         </Field>
 
         <Field label="Tittel">
-          <input name="title" required key={fetched?.title} defaultValue={fetched?.title ?? book.title} className="input-clean" />
+          <input name="title" required key={`title-${fetchCount}`} defaultValue={fetched?.title ?? book.title} className="input-clean" />
         </Field>
         <Field label="Forfatter">
-          <input name="author" required key={fetched?.author} defaultValue={fetched?.author ?? book.author} className="input-clean" />
+          <input name="author" required key={`author-${fetchCount}`} defaultValue={fetched?.author ?? book.author} className="input-clean" />
         </Field>
         <Field label="Beskrivelse">
           <textarea name="description" required defaultValue={book.description} className="input-clean resize-none" rows={3} />

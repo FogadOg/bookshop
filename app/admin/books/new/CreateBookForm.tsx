@@ -30,6 +30,7 @@ export default function CreateBookForm() {
   const [preview, setPreview] = useState<string | null>(null);
   const [fetching, setFetching] = useState(false);
   const [fields, setFields] = useState<Partial<BookFields>>({});
+  const [fetchCount, setFetchCount] = useState(0);
   const isbnRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -51,6 +52,7 @@ export default function CreateBookForm() {
       return;
     }
     setFields(result);
+    setFetchCount((c) => c + 1);
     if (result.imageUrl) setPreview(result.imageUrl);
   }
 
@@ -83,10 +85,10 @@ export default function CreateBookForm() {
       </Field>
 
       <Field label="Tittel">
-        <input name="title" required key={fields.title} defaultValue={fields.title ?? ""} className="input-clean" />
+        <input name="title" required key={`title-${fetchCount}`} defaultValue={fields.title ?? ""} className="input-clean" />
       </Field>
       <Field label="Forfatter">
-        <input name="author" required key={fields.author} defaultValue={fields.author ?? ""} className="input-clean" />
+        <input name="author" required key={`author-${fetchCount}`} defaultValue={fields.author ?? ""} className="input-clean" />
       </Field>
       <Field label="Beskrivelse">
         <textarea name="description" required className="input-clean resize-none" rows={3} />
