@@ -23,7 +23,10 @@ export default function EditBookForm({ book }: { book: Book }) {
   const [fetching, setFetching] = useState(false);
   const [fetched, setFetched] = useState<{ title: string; author: string; imageUrl: string } | null>(null);
   const [fetchCount, setFetchCount] = useState(0);
+  const [imageRemoved, setImageRemoved] = useState(false);
+  const [fileInputKey, setFileInputKey] = useState(0);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isbn, setIsbn] = useState(book.isbn);
   const isbnRef = useRef<HTMLInputElement>(null);
 
   const update = updateBook.bind(null, book.id);
@@ -34,7 +37,16 @@ export default function EditBookForm({ book }: { book: Book }) {
     if (result) setDeleteError(result);
   }
 
-  const currentImageUrl = fetched?.imageUrl ?? book.imageUrl ?? "";
+  function handleRemoveImage() {
+    setPreview(null);
+    setImageRemoved(true);
+    setFetched((prev) => prev ? { ...prev, imageUrl: "" } : prev);
+    setFileInputKey((k) => k + 1);
+  }
+
+  const currentImageUrl = imageRemoved
+    ? ""
+    : fetched?.imageUrl ?? book.imageUrl ?? "";
 
   async function handleIsbnLookup() {
     const isbn = isbnRef.current?.value.trim();
@@ -48,7 +60,10 @@ export default function EditBookForm({ book }: { book: Book }) {
     }
     setFetched(result);
     setFetchCount((c) => c + 1);
-    if (result.imageUrl) setPreview(result.imageUrl);
+    if (result.imageUrl) {
+      setPreview(result.imageUrl);
+      setImageRemoved(false);
+    }
   }
 
   return (
@@ -62,14 +77,19 @@ export default function EditBookForm({ book }: { book: Book }) {
               ref={isbnRef}
               name="isbn"
               required
-              defaultValue={book.isbn}
+              value={isbn}
+              onChange={(e) => setIsbn(e.target.value)}
               className="input-clean flex-1"
             />
             <button
               type="button"
               onClick={handleIsbnLookup}
-              disabled={fetching}
-              className="px-4 py-2 border border-default rounded text-sm text-muted hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
+              disabled={fetching || !isbn.trim()}
+              className={
+                isbn.trim()
+                  ? "btn-accent px-4 py-2 rounded text-sm font-medium disabled:opacity-50"
+                  : "px-4 py-2 border border-default rounded text-sm text-muted transition-colors disabled:opacity-50"
+              }
             >
               {fetching ? "..." : "Hent info"}
             </button>
@@ -98,17 +118,32 @@ export default function EditBookForm({ book }: { book: Book }) {
         </Field>
         <Field label="Bilde (valgfritt)">
           {preview && (
-            <img src={preview} alt="Preview" className="w-full h-48 object-contain rounded-md mb-3 bg-[var(--accent-soft)]/30 p-3" />
+            <div className="relative mb-3">
+              <img src={preview} alt="Preview" className="w-full h-48 object-contain rounded-md bg-[var(--accent-soft)]/30 p-3" />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute top-2 right-2 bg-surface border border-default rounded-full w-8 h-8 flex items-center justify-center text-sm text-muted hover:text-red-700 hover:border-red-300 transition-colors"
+                aria-label="Fjern bilde"
+              >
+                ×
+              </button>
+            </div>
           )}
           <input
+            key={fileInputKey}
             name="imageFile"
             type="file"
             accept="image/*"
             className="block w-full text-sm text-muted file:mr-3 file:px-4 file:py-2 file:border-0 file:bg-accent-soft file:text-accent file:rounded file:font-medium file:cursor-pointer hover:file:bg-accent hover:file:text-white file:transition-colors"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) setPreview(URL.createObjectURL(file));
-              else setPreview(currentImageUrl || null);
+              if (file) {
+                setPreview(URL.createObjectURL(file));
+                setImageRemoved(false);
+              } else {
+                setPreview(currentImageUrl || null);
+              }
             }}
           />
           <p className="text-xs text-muted-soft mt-2">Last opp en fil, eller la feltet være tomt for å bruke omslaget fra Open Library.</p>

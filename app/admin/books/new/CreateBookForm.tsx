@@ -31,7 +31,15 @@ export default function CreateBookForm() {
   const [fetching, setFetching] = useState(false);
   const [fields, setFields] = useState<Partial<BookFields>>({});
   const [fetchCount, setFetchCount] = useState(0);
+  const [fileInputKey, setFileInputKey] = useState(0);
+  const [isbn, setIsbn] = useState("");
   const isbnRef = useRef<HTMLInputElement>(null);
+
+  function handleRemoveImage() {
+    setPreview(null);
+    setFields((prev) => ({ ...prev, imageUrl: "" }));
+    setFileInputKey((k) => k + 1);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,10 +50,10 @@ export default function CreateBookForm() {
   }
 
   async function handleIsbnLookup() {
-    const isbn = isbnRef.current?.value.trim();
-    if (!isbn) return;
+    const trimmed = isbn.trim();
+    if (!trimmed) return;
     setFetching(true);
-    const result = await fetchBookByIsbn(isbn);
+    const result = await fetchBookByIsbn(trimmed);
     setFetching(false);
     if (!result) {
       alert("Ingen bok funnet for dette ISBN-nummeret.");
@@ -69,15 +77,20 @@ export default function CreateBookForm() {
             ref={isbnRef}
             name="isbn"
             required
-            defaultValue={fields.isbn ?? ""}
+            value={isbn}
+            onChange={(e) => setIsbn(e.target.value)}
             className="input-clean flex-1"
             placeholder="9780140328721"
           />
           <button
             type="button"
             onClick={handleIsbnLookup}
-            disabled={fetching}
-            className="px-4 py-2 border border-default rounded text-sm text-muted hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
+            disabled={fetching || !isbn.trim()}
+            className={
+              isbn.trim()
+                ? "btn-accent px-4 py-2 rounded text-sm font-medium disabled:opacity-50"
+                : "px-4 py-2 border border-default rounded text-sm text-muted transition-colors disabled:opacity-50"
+            }
           >
             {fetching ? "..." : "Hent info"}
           </button>
@@ -106,9 +119,20 @@ export default function CreateBookForm() {
       </Field>
       <Field label="Bilde (valgfritt)">
         {preview && (
-          <img src={preview} alt="Preview" className="w-full h-48 object-contain rounded-md mb-3 bg-[var(--accent-soft)]/30 p-3" />
+          <div className="relative mb-3">
+            <img src={preview} alt="Preview" className="w-full h-48 object-contain rounded-md bg-[var(--accent-soft)]/30 p-3" />
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              className="absolute top-2 right-2 bg-surface border border-default rounded-full w-8 h-8 flex items-center justify-center text-sm text-muted hover:text-red-700 hover:border-red-300 transition-colors"
+              aria-label="Fjern bilde"
+            >
+              ×
+            </button>
+          </div>
         )}
         <input
+          key={fileInputKey}
           name="imageFile"
           type="file"
           accept="image/*"
