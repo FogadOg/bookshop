@@ -33,7 +33,10 @@ model Order {
   id              String      @id @default(cuid())
   customerName    String
   customerEmail   String
-  address         String
+  streetAddress   String
+  postalCode      String
+  city            String
+  country         String      @default("Norge")
   status          OrderStatus @default(NY)
   total           Float
   discountCode    String?

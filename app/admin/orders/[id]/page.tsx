@@ -75,7 +75,11 @@ export default async function OrderDetailPage({
           <p className="text-muted text-sm">{order.customerEmail}</p>
         </Section>
         <Section title="Leveringsadresse">
-          <p className="text-sm text-[var(--foreground)] whitespace-pre-line">{order.address}</p>
+          <div className="text-sm text-[var(--foreground)] space-y-0.5">
+            <p>{order.streetAddress}</p>
+            <p>{order.postalCode} {order.city}</p>
+            <p>{order.country}</p>
+          </div>
         </Section>
       </div>
 

@@ -23,7 +23,6 @@ export async function createOrder(items: CartItem[], formData: FormData): Promis
   const postalCode = (formData.get("postalCode") as string)?.trim();
   const city = (formData.get("city") as string)?.trim();
   const country = (formData.get("country") as string)?.trim();
-  const address = `${streetAddress}\n${postalCode} ${city}\n${country}`;
   const discountCodeInput = (formData.get("discountCode") as string)?.trim().toUpperCase();
 
   if (items.length === 0) {
@@ -81,7 +80,10 @@ export async function createOrder(items: CartItem[], formData: FormData): Promis
       data: {
         customerName,
         customerEmail,
-        address,
+        streetAddress,
+        postalCode,
+        city,
+        country,
         total,
         discountCode: discountPercent > 0 ? discountCodeInput : null,
         discountPercent: discountPercent > 0 ? discountPercent : null,
