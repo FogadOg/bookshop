@@ -12,6 +12,7 @@ export default async function Home({
   const [books, categories] = await Promise.all([
     prisma.book.findMany({
       where: {
+        archived: false,
         AND: [
           q
             ? {
@@ -27,7 +28,11 @@ export default async function Home({
       orderBy: { createdAt: "desc" },
     }),
     prisma.book
-      .findMany({ select: { category: true }, distinct: ["category"] })
+      .findMany({
+        where: { archived: false },
+        select: { category: true },
+        distinct: ["category"],
+      })
       .then((rows) => rows.map((r) => r.category)),
   ]);
 

@@ -87,8 +87,13 @@ export async function updateBook(id: string, formData: FormData) {
 export async function deleteBook(id: string): Promise<string | void> {
   const orderItemCount = await prisma.orderItem.count({ where: { bookId: id } });
   if (orderItemCount > 0) {
-    return "Kan ikke slette bok som har blitt bestilt. Sett heller lager til 0 for å skjule den.";
+    return "Kan ikke slette bok som har blitt bestilt. Arkiver den i stedet for å skjule den.";
   }
   await prisma.book.delete({ where: { id } });
+  redirect("/admin");
+}
+
+export async function setBookArchived(id: string, archived: boolean) {
+  await prisma.book.update({ where: { id }, data: { archived } });
   redirect("/admin");
 }

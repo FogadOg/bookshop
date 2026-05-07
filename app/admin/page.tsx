@@ -53,7 +53,7 @@ export default async function AdminPage() {
           <Link
             key={book.id}
             href={`/admin/books/${book.id}`}
-            className="flex items-center gap-3 py-4 hover:opacity-70 transition-opacity"
+            className={`flex items-center gap-3 py-4 hover:opacity-70 transition-opacity ${book.archived ? "opacity-50" : ""}`}
           >
             <div className="w-12 h-16 bg-[var(--accent-soft)]/30 rounded shrink-0 overflow-hidden">
               {book.imageUrl && (
@@ -63,9 +63,10 @@ export default async function AdminPage() {
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm truncate">{book.title}</p>
               <p className="text-xs text-muted truncate">{book.author}</p>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <span className="text-[10px] uppercase tracking-wider text-muted-soft">{book.category}</span>
-                {book.stock === 0 && <span className="text-[10px] text-accent">Utsolgt</span>}
+                {book.archived && <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">Arkivert</span>}
+                {book.stock === 0 && !book.archived && <span className="text-[10px] text-accent">Utsolgt</span>}
               </div>
             </div>
             <div className="text-right shrink-0">
@@ -91,8 +92,13 @@ export default async function AdminPage() {
           </thead>
           <tbody className="divide-y divide-[var(--border-soft)]">
             {books.map((book) => (
-              <tr key={book.id} className="hover:bg-[var(--accent-soft)]/20 transition-colors group">
-                <td className="py-3.5 font-medium">{book.title}</td>
+              <tr key={book.id} className={`hover:bg-[var(--accent-soft)]/20 transition-colors group ${book.archived ? "opacity-50" : ""}`}>
+                <td className="py-3.5 font-medium">
+                  <span className="flex items-center gap-2">
+                    {book.title}
+                    {book.archived && <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">Arkivert</span>}
+                  </span>
+                </td>
                 <td className="py-3.5 text-muted">{book.author}</td>
                 <td className="py-3.5 text-muted">{book.category}</td>
                 <td className="py-3.5 text-right">{formatPrice(book.price)} kr</td>

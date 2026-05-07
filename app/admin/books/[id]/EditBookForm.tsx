@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Book } from "@prisma/client";
-import { updateBook, deleteBook } from "../actions";
+import { updateBook, deleteBook, setBookArchived } from "../actions";
 
 async function fetchBookByIsbn(isbn: string) {
   const res = await fetch(
@@ -116,6 +116,25 @@ export default function EditBookForm({ book }: { book: Book }) {
           Lagre endringer
         </button>
       </form>
+
+      <div className="border border-soft rounded-md p-6 bg-surface mb-4">
+        <h2 className="text-sm uppercase tracking-wider text-muted mb-1">
+          {book.archived ? "Arkivert" : "Arkiver"}
+        </h2>
+        <p className="text-sm text-muted mb-4">
+          {book.archived
+            ? "Boken er skjult fra butikken. Tidligere ordre er ikke påvirket."
+            : "Skjul boken fra butikken uten å slette den. Tidligere ordre forblir intakte."}
+        </p>
+        <form action={setBookArchived.bind(null, book.id, !book.archived)}>
+          <button
+            type="submit"
+            className="w-full py-2.5 border border-default text-[var(--foreground)] rounded text-sm font-medium hover:border-accent hover:text-accent transition-colors"
+          >
+            {book.archived ? "Gjenopprett bok" : "Arkiver bok"}
+          </button>
+        </form>
+      </div>
 
       <div className="border border-soft rounded-md p-6 bg-surface">
         <h2 className="text-sm uppercase tracking-wider text-red-700 mb-1">Faresone</h2>

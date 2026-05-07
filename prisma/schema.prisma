@@ -25,6 +25,7 @@ model Book {
   stock       Int         @default(0)
   category    String
   imageUrl    String?
+  archived    Boolean     @default(false)
   createdAt   DateTime    @default(now())
   orderItems  OrderItem[]
 }

@@ -28,13 +28,16 @@ async function getRelatedBooks(bookId: string, category: string) {
   const coBoughtIds = coBoughtCounts.map((c) => c.bookId);
 
   if (coBoughtIds.length >= 4) {
-    return prisma.book.findMany({ where: { id: { in: coBoughtIds } } });
+    return prisma.book.findMany({
+      where: { id: { in: coBoughtIds }, archived: false },
+    });
   }
 
   // Fallback: fill with books from the same category
   const fallback = await prisma.book.findMany({
     where: {
       category,
+      archived: false,
       id: { not: bookId, notIn: coBoughtIds },
     },
     take: 4 - coBoughtIds.length,
@@ -42,7 +45,9 @@ async function getRelatedBooks(bookId: string, category: string) {
 
   if (coBoughtIds.length === 0) return fallback;
 
-  const coBought = await prisma.book.findMany({ where: { id: { in: coBoughtIds } } });
+  const coBought = await prisma.book.findMany({
+    where: { id: { in: coBoughtIds }, archived: false },
+  });
   return [...coBought, ...fallback];
 }
 
@@ -53,7 +58,7 @@ export default async function BokDetaljPage({
 }) {
   const { id } = await params;
   const book = await prisma.book.findUnique({ where: { id } });
-  if (!book) notFound();
+  if (!book || book.archived) notFound();
 
   const related = await getRelatedBooks(id, book.category);
 
