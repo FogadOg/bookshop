@@ -22,10 +22,16 @@ export default function EditBookForm({ book }: { book: Book }) {
   const [preview, setPreview] = useState<string | null>(book.imageUrl ?? null);
   const [fetching, setFetching] = useState(false);
   const [fetched, setFetched] = useState<{ title: string; author: string; imageUrl: string } | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const isbnRef = useRef<HTMLInputElement>(null);
 
   const update = updateBook.bind(null, book.id);
-  const remove = deleteBook.bind(null, book.id);
+
+  async function handleDelete() {
+    if (!confirm("Er du sikker på at du vil slette denne boken?")) return;
+    const result = await deleteBook(book.id);
+    if (result) setDeleteError(result);
+  }
 
   const currentImageUrl = fetched?.imageUrl ?? book.imageUrl ?? "";
 
@@ -114,11 +120,16 @@ export default function EditBookForm({ book }: { book: Book }) {
       <div className="border border-soft rounded-md p-6 bg-surface">
         <h2 className="text-sm uppercase tracking-wider text-red-700 mb-1">Faresone</h2>
         <p className="text-sm text-muted mb-4">Dette kan ikke angres.</p>
-        <form action={remove}>
-          <button type="submit" className="w-full py-2.5 border border-red-200 text-red-700 rounded text-sm font-medium hover:bg-red-50 transition-colors">
-            Slett bok
-          </button>
-        </form>
+        {deleteError && (
+          <div className="bg-red-50 text-red-700 text-sm py-2.5 px-4 rounded mb-3">{deleteError}</div>
+        )}
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="w-full py-2.5 border border-red-200 text-red-700 rounded text-sm font-medium hover:bg-red-50 transition-colors"
+        >
+          Slett bok
+        </button>
       </div>
     </>
   );
