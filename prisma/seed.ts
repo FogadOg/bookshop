@@ -1,18 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import https from "https";
 import fs from "fs";
 import path from "path";
-import { createWriteStream, mkdirSync } from "fs";
+import { mkdirSync } from "fs";
 
 const prisma = new PrismaClient();
 
 const uploadsDir = path.join(process.cwd(), "public", "uploads");
 
 const books = [
+  // Originals — all verified to have covers on Open Library
   { isbn: "9780747532743", category: "Fantasi",          price: 149, stock: 20, description: "Den første boken i den legendariske Harry Potter-serien. Elleve år gamle Harry oppdager at han er en trollmann og begynner på Galtvort skole for hekseri og trolldom." },
   { isbn: "9780261103573", category: "Fantasi",          price: 169, stock: 15, description: "Det første bindet i Ringenes Herre-trilogien. Hobbiten Frodo Lommelun arver en farlig ring og må begi seg ut på en farefull reise for å ødelegge den." },
   { isbn: "9780743273565", category: "Klassiker",        price: 129, stock: 18, description: "En tidløs klassiker som utforsker temaer som rikdom, kjærlighet og den amerikanske drømmen i 1920-tallets New York." },
-  { isbn: "9780385333481", category: "Klassiker",        price: 139, stock: 12, description: "En satirisk roman om menneskenes absurde eksistens, fortalt gjennom vitenskapsmannen Felix som utilsiktet bidrar til jordens undergang." },
   { isbn: "9780060935467", category: "Klassiker",        price: 139, stock: 14, description: "En gripende roman om rasisme og urettferdighet i det amerikanske sørstatene, sett gjennom øynene til den unge Scout Finch." },
   { isbn: "9780525559474", category: "Skjønnlitteratur", price: 159, stock: 22, description: "Nora Seed befinner seg i et bibliotek mellom liv og død, der hver bok representerer et liv hun kunne ha levd. En rørende roman om valg og meningen med livet." },
   { isbn: "9781501156700", category: "Skrekk",           price: 169, stock: 10, description: "En familie flytter til Maine og oppdager en mystisk kirkegård i skogen bak huset. Stephen Kings mest skremmende roman om sorg og det overnaturlige." },
@@ -30,28 +29,36 @@ const books = [
   { isbn: "9780525478812", category: "Ungdom",           price: 139, stock: 25, description: "Hazel Grace Lancaster har kreft og forventer ikke å leve lenge. Så møter hun Augustus Waters på en støttegruppe. En hjerteskjærende kjærlighetshistorie om å leve fullt ut." },
   { isbn: "9780307588371", category: "Krim",             price: 149, stock: 18, description: "Nick Dunne melder kona Amy savnet på bryllupsdagen deres. Ettersom etterforskningen skrider frem, avsløres løgner og manipulasjon på begge sider. En mesterlig psykologisk thriller." },
   { isbn: "9780385543781", category: "Skjønnlitteratur", price: 169, stock: 12, description: "Den direkte oppfølgeren til Tjenerinnens beretning. To kvinner med svært ulike bakgrunner kjemper for frihet i det undertrykkende Gilead. Vinner av Booker Prize 2019." },
-  { isbn: "9780593230572", category: "Sakprosa",         price: 219, stock: 16, description: "En grundig undersøkelse av slaveriets arv og dets vedvarende innflytelse på det amerikanske samfunnet, med utgangspunkt i 1619 da de første afrikanske slavene ankom Virginia." },
-  { isbn: "9780385737951", category: "Ungdom",           price: 149, stock: 20, description: "Thomas våkner opp uten minner i en labyrint befolket av andre gutter. For å overleve må han løse mysteriet med labyrinten før den stenger for alltid." },
-  { isbn: "9780804139021", category: "Skjønnlitteratur", price: 159, stock: 18, description: "Mark Watney blir forlatt på Mars og må bruke sin kunnskap som botaniker og ingeniør for å overleve alene på den røde planeten. En vitenskapelig overlevelsesthriller." },
-  { isbn: "9780385545990", category: "Krim",             price: 149, stock: 14, description: "En advokat på Camino Island oppdager at noe er galt på den lille øya han alltid har elsket. John Grishams solrike krim med en mørk hemmelighet i kjernen." },
-  { isbn: "9781982110574", category: "Skrekk",           price: 169, stock: 12, description: "Barn forsvinner fra en liten by i Maine og havner i et mystisk institutt der de utsettes for eksperimenter for å utnytte deres overnaturlige evner. Stephen King på sitt beste." },
-  { isbn: "9780735219090", category: "Skjønnlitteratur", price: 169, stock: 20, description: "Kya Clark vokser opp alene i sumpmarkene i North Carolina etter at familien forlater henne. En roman om ensomhet, naturens skjønnhet og et uoppklart drap." },
-  { isbn: "9781501175466", category: "Skrekk",           price: 179, stock: 10, description: "En klovn ved navn Pennywise terroriserer barn i den lille byen Derry, Maine. En gruppe venner må konfrontere sin største frykt for å stoppe det onde. Stephen Kings magnum opus." },
-  { isbn: "9780525521143", category: "Skjønnlitteratur", price: 159, stock: 15, description: "På et hotell midt i havet forsvinner en kvinne sporløst. Romanen veksler mellom fortid og nåtid og utforsker hvordan valg vi tar former livene vi lever." },
-  { isbn: "9780316346627", category: "Sakprosa",         price: 169, stock: 22, description: "Malcolm Gladwell undersøker det magiske øyeblikket når en idé, trend eller sosial atferd krysser en terskel og sprer seg som en epidemi. En banebrytende bok om sosiale forandringer." },
-  { isbn: "9780385545952", category: "Skjønnlitteratur", price: 169, stock: 16, description: "Bonnie Garmus' debutroman om kjemiker Elizabeth Zott som på 1960-tallet havner som programleder på et matlagingsprogram og bruker det til å utdanne og frigjøre kvinner." },
+  { isbn: "9780062060624", category: "Fantasi",          price: 159, stock: 18, description: "Madeline Millers gjenfortelling av kjærligheten mellom Akilles og Patroklos, satt mot bakteppet av den trojanske krig. En lyrisk og hjerteskjærende roman om gudene og menneskene." },
+  { isbn: "9780062073488", category: "Krim",             price: 139, stock: 22, description: "Ti fremmede inviteres til en isolert øy. Én etter én blir de drept i tråd med en gammel barnesang. Agatha Christies mest oppfinnsomme mordmysterium og en av de mest solgte krimromanene noensinne." },
+  { isbn: "9780143127550", category: "Skjønnlitteratur", price: 159, stock: 15, description: "Lydia Lee, favoritten i en kinesisk-amerikansk familie i 1970-tallets Ohio, blir funnet død i en innsjø. Celeste Ngs debutroman utforsker familieforventninger, identitet og hemmeligheter." },
+  { isbn: "9780451524935", category: "Klassiker",        price: 129, stock: 25, description: "Winston Smith arbeider for Sannhetsministeriet i et totalitært samfunn der Big Brother overvåker alt. Orwells dystopiske mesterverk om tankekontroll, sensur og motstand." },
+  { isbn: "9780141439518", category: "Klassiker",        price: 119, stock: 20, description: "Elizabeth Bennet og Mr. Darcy starter i misforståelse og fordommer, men gjennom samtaler og sosiale forviklinger oppdager de både seg selv og hverandre. Jane Austens mest elskede roman." },
+  { isbn: "9780141439600", category: "Klassiker",        price: 129, stock: 14, description: "Charles Dickens' historiske roman om London og Paris under den franske revolusjon, med tema som offer, gjenoppstandelse og resignasjon. En av tidenes mest solgte bøker." },
+  { isbn: "9780141439587", category: "Klassiker",        price: 119, stock: 12, description: "Den vakre, smarte og rike Emma Woodhouse mener hun er en mester i matchmaking. Jane Austens komedie om selvbedrag, kjærlighet og personlig vekst i den engelske landsbyen Highbury." },
+  { isbn: "9780375842207", category: "Ungdom",           price: 159, stock: 20, description: "Markus Zusaks roman fortalt av Døden selv. I Tyskland under andre verdenskrig stjeler den unge Liesel bøker for å overleve – og for å gi mening til en verden i kaos." },
+  { isbn: "9780099518471", category: "Klassiker",        price: 129, stock: 16, description: "Aldous Huxleys dystopi om en fremtid der mennesker dyrkes på fabrikker, og lykke kommer fra piller og underholdning. En profetisk advarsel mot teknologisk konformitet." },
+  { isbn: "9780006546061", category: "Klassiker",        price: 129, stock: 14, description: "Ray Bradburys klassiske dystopi om en brannmann hvis jobb er å brenne bøker. Når Guy Montag begynner å lese, oppdager han hva samfunnet har mistet." },
+  { isbn: "9780393327342", category: "Skjønnlitteratur", price: 149, stock: 12, description: "Chuck Palahniuks rasende debutroman om en mann som starter en hemmelig fight club med karismatiske Tyler Durden. En av 90-tallets mest innflytelsesrike romaner." },
+  { isbn: "9780099273936", category: "Klassiker",        price: 159, stock: 10, description: "Sethe har rømt fra slaveriet, men fortiden hjemsøker henne i form av et spøkelse i hennes hjem i Ohio. Toni Morrisons Pulitzer-vinnende roman om frihet, sorg og morskap." },
+  { isbn: "9780062315007", category: "Skjønnlitteratur", price: 149, stock: 25, description: "Gjeteren Santiago drar fra Spania til Egypt på leting etter en skatt. Paulo Coelhos moderne fabel om å følge sine drømmer er oversatt til over 80 språk." },
+  { isbn: "9780525536291", category: "Skjønnlitteratur", price: 169, stock: 18, description: "To svarte tvillingsøstre rømmer fra hjembyen som tenåringer. Ti år senere lever de svært ulike liv: én svart, én som hvit. Brit Bennetts roman om identitet, familie og rase." },
+  { isbn: "9780375507250", category: "Skjønnlitteratur", price: 179, stock: 12, description: "David Mitchells genre-sprengende roman som veksler mellom seks fortellinger spredt over fem århundrer, fra 1850-tallets Stillehav til en post-apokalyptisk fremtid." },
+  { isbn: "9780812973815", category: "Sakprosa",         price: 199, stock: 16, description: "Nassim Nicholas Taleb undersøker hvordan høyst usannsynlige hendelser med ekstreme konsekvenser former historien, finansmarkedene og våre liv – og hvorfor vi konstant feilbedømmer dem." },
+  { isbn: "9780156012195", category: "Ungdom",           price: 119, stock: 30, description: "En liten prins fra asteroide B-612 møter en flyger som har styrtet i Sahara. Antoine de Saint-Exupérys filosofiske fabel om kjærlighet, vennskap og hva som er viktig i livet." },
+  { isbn: "9780812984965", category: "Sakprosa",         price: 189, stock: 14, description: "Bryan Stevenson forteller historien om Walter McMillian, en svart mann uskyldig dømt til døden i Alabama. En kraftfull memoar om rettferdighet, rasisme og tilgivelse i det amerikanske rettssystemet." },
+  { isbn: "9780151010264", category: "Klassiker",        price: 169, stock: 12, description: "George Orwells to dystopiske mesterverk i ett bind. Animal Farm – den allegoriske historien om dyrene som overtar gården – og 1984, romanen som ga oss begrepene Big Brother og tankekontroll." },
+  { isbn: "9780156030083", category: "Skjønnlitteratur", price: 149, stock: 16, description: "Charlie Gordon har lav IQ, men en eksperimentell behandling gjør ham til geni – først. Daniel Keyes' rørende roman om intelligens, vennskap og hva som gjør oss menneskelige." },
 ];
 
 async function downloadImage(url: string, filename: string): Promise<string> {
   mkdirSync(uploadsDir, { recursive: true });
   const dest = path.join(uploadsDir, filename);
-  return new Promise((resolve, reject) => {
-    const file = createWriteStream(dest);
-    https.get(url, (res) => {
-      res.pipe(file);
-      file.on("finish", () => { file.close(); resolve(`/uploads/${filename}`); });
-    }).on("error", (err) => { fs.unlink(dest, () => {}); reject(err); });
-  });
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const buffer = Buffer.from(await res.arrayBuffer());
+  fs.writeFileSync(dest, buffer);
+  return `/uploads/${filename}`;
 }
 
 async function fetchBookData(isbn: string) {
@@ -77,14 +84,14 @@ async function main() {
 
     const existing = await prisma.book.findUnique({ where: { isbn: book.isbn } });
 
-    let imageUrl: string | null = existing?.imageUrl ?? null;
-    if (coverUrl && !imageUrl) {
+    let imageUrl: string | null = null;
+    if (coverUrl) {
       try {
         const ext = coverUrl.split(".").pop()?.split("?")[0] ?? "jpg";
         const filename = `${Date.now()}-${isbnSlug(book.isbn)}.${ext}`;
         imageUrl = await downloadImage(coverUrl, filename);
-      } catch {
-        console.warn(`  Could not download cover for ${book.isbn}`);
+      } catch (e: any) {
+        console.warn(`  Could not download cover for ${book.isbn}: ${e.message}`);
       }
     }
 
@@ -96,7 +103,7 @@ async function main() {
         description: book.description,
         price: book.price,
         category: book.category,
-        imageUrl,
+        imageUrl: imageUrl ?? existing?.imageUrl ?? null,
       },
       create: {
         isbn: book.isbn,
