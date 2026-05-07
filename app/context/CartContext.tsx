@@ -74,7 +74,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeFromCart(bookId);
     } else {
       save((prev) =>
-        prev.map((i) => (i.bookId === bookId ? { ...i, quantity } : i))
+        prev.map((i) =>
+          i.bookId === bookId
+            ? { ...i, quantity: Math.min(quantity, i.stock) }
+            : i
+        )
       );
     }
   }

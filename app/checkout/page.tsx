@@ -7,12 +7,13 @@ import { useState, useTransition } from "react";
 import { formatPrice } from "../../lib/format";
 
 export default function CheckoutPage() {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, updateQuantity } = useCart();
   const [isPending, startTransition] = useTransition();
   const [discountCode, setDiscountCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState<number | null>(null);
   const [discountError, setDiscountError] = useState("");
   const [isValidating, setIsValidating] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   if (items.length === 0) {
     return (
@@ -47,8 +48,20 @@ export default function CheckoutPage() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setOrderError(null);
     const formData = new FormData(e.currentTarget);
-    startTransition(() => createOrder(items, formData));
+    startTransition(async () => {
+      const result = await createOrder(items, formData);
+      if (result && !result.ok) {
+        setOrderError(result.error);
+        if (result.adjustments) {
+          for (const adj of result.adjustments) {
+            updateQuantity(adj.bookId, adj.available);
+          }
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
   }
 
   const discountedSubtotal = discountPercent
@@ -60,6 +73,12 @@ export default function CheckoutPage() {
   return (
     <main className="w-full sm:max-w-3xl sm:mx-auto px-4 sm:px-8 py-12 sm:py-16">
       <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-10">Kasse</h1>
+
+      {orderError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 text-sm py-3 px-4 rounded mb-6">
+          {orderError}
+        </div>
+      )}
 
       <div className="border border-soft rounded-md p-6 mb-8 bg-surface">
         <h2 className="text-sm uppercase tracking-wider text-muted mb-4">Oppsummering</h2>

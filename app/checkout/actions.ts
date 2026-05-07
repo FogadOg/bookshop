@@ -12,26 +12,48 @@ type CartItem = {
   stock: number;
 };
 
-export async function createOrder(items: CartItem[], formData: FormData) {
+export type CreateOrderResult =
+  | { ok: true }
+  | { ok: false; error: string; adjustments?: { bookId: string; available: number }[] };
+
+export async function createOrder(items: CartItem[], formData: FormData): Promise<CreateOrderResult> {
   const customerName = formData.get("customerName") as string;
   const customerEmail = formData.get("customerEmail") as string;
   const address = formData.get("address") as string;
   const discountCodeInput = (formData.get("discountCode") as string)?.trim().toUpperCase();
 
-  // Reject invalid quantities from the client
-  if (items.some((i) => !Number.isInteger(i.quantity) || i.quantity < 1)) {
-    throw new Error("Invalid quantity");
+  if (items.length === 0) {
+    return { ok: false, error: "Handlekurven er tom." };
   }
 
-  // Re-fetch prices and stock from the database — never trust client-supplied values
+  if (items.some((i) => !Number.isInteger(i.quantity) || i.quantity < 1)) {
+    return { ok: false, error: "Ugyldig antall i handlekurven." };
+  }
+
   const bookIds = items.map((i) => i.bookId);
   const books = await prisma.book.findMany({ where: { id: { in: bookIds } } });
 
-  // Reject if any bookId doesn't exist or quantity exceeds available stock
+  const missingBook = items.find((i) => !books.find((b) => b.id === i.bookId));
+  if (missingBook) {
+    return {
+      ok: false,
+      error: "En av bøkene i handlekurven finnes ikke lenger. Oppdater handlekurven og prøv igjen.",
+    };
+  }
+
+  const adjustments: { bookId: string; available: number }[] = [];
   for (const item of items) {
-    const book = books.find((b) => b.id === item.bookId);
-    if (!book) throw new Error("Book not found");
-    if (item.quantity > book.stock) throw new Error("Insufficient stock");
+    const book = books.find((b) => b.id === item.bookId)!;
+    if (item.quantity > book.stock) {
+      adjustments.push({ bookId: book.id, available: book.stock });
+    }
+  }
+  if (adjustments.length > 0) {
+    return {
+      ok: false,
+      error: "Det er ikke nok på lager for noen av bøkene. Antall har blitt justert i handlekurven.",
+      adjustments,
+    };
   }
 
   const subtotal = items.reduce((sum, item) => {
