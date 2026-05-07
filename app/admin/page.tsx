@@ -10,10 +10,21 @@ export default async function AdminPage() {
   const session = await auth();
   if (!session) redirect("/admin/login");
 
-  const [books, orderCount] = await Promise.all([
-    prisma.book.findMany({ orderBy: { createdAt: "desc" } }),
+  const [booksRaw, orderCount, salesCounts] = await Promise.all([
+    prisma.book.findMany(),
     prisma.order.count(),
+    prisma.orderItem.groupBy({
+      by: ["bookId"],
+      _sum: { quantity: true },
+    }),
   ]);
+
+  const salesMap = new Map(salesCounts.map((s) => [s.bookId, s._sum.quantity ?? 0]));
+
+  const books = [...booksRaw].sort((a, b) => {
+    if (a.archived !== b.archived) return a.archived ? 1 : -1;
+    return (salesMap.get(b.id) ?? 0) - (salesMap.get(a.id) ?? 0);
+  });
 
   return (
     <main className="w-full sm:max-w-6xl sm:mx-auto px-4 sm:px-8 py-12 sm:py-14">
