@@ -149,8 +149,23 @@ export default function CheckoutPage() {
             <Field label="E-post">
               <input name="customerEmail" type="email" required className="input-clean" placeholder="ola@example.com" />
             </Field>
-            <Field label="Leveringsadresse">
-              <textarea name="address" required className="input-clean resize-none" placeholder="Gateadresse, postnummer, by" rows={3} />
+            <Field label="Gateadresse">
+              <input name="streetAddress" required className="input-clean" placeholder="Storgata 1" />
+            </Field>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-1">
+                <Field label="Postnummer">
+                  <input name="postalCode" required pattern="[0-9]{4}" maxLength={4} className="input-clean" placeholder="0123" />
+                </Field>
+              </div>
+              <div className="col-span-2">
+                <Field label="Poststed">
+                  <input name="city" required className="input-clean" placeholder="Oslo" />
+                </Field>
+              </div>
+            </div>
+            <Field label="Land">
+              <input name="country" required defaultValue="Norge" className="input-clean" />
             </Field>
           </div>
         </div>

@@ -19,7 +19,11 @@ export type CreateOrderResult =
 export async function createOrder(items: CartItem[], formData: FormData): Promise<CreateOrderResult> {
   const customerName = formData.get("customerName") as string;
   const customerEmail = formData.get("customerEmail") as string;
-  const address = formData.get("address") as string;
+  const streetAddress = (formData.get("streetAddress") as string)?.trim();
+  const postalCode = (formData.get("postalCode") as string)?.trim();
+  const city = (formData.get("city") as string)?.trim();
+  const country = (formData.get("country") as string)?.trim();
+  const address = `${streetAddress}\n${postalCode} ${city}\n${country}`;
   const discountCodeInput = (formData.get("discountCode") as string)?.trim().toUpperCase();
 
   if (items.length === 0) {

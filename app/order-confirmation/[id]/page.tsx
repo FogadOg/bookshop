@@ -34,7 +34,7 @@ export default async function OrderConfirmationPage({
         <div className="text-sm flex flex-col gap-1">
           <p className="font-medium text-[var(--foreground)]">{order.customerName}</p>
           <p className="text-muted">{order.customerEmail}</p>
-          <p className="text-muted">{order.address}</p>
+          <p className="text-muted whitespace-pre-line">{order.address}</p>
         </div>
       </div>
 

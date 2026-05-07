@@ -27,6 +27,7 @@ export default function LoginPage() {
       setError("Feil e-post eller passord");
     } else {
       router.push("/admin");
+      router.refresh();
     }
   }
 
