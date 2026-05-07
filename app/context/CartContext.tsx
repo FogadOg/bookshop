@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { getFreshBooks } from "./cartActions";
 
 export type CartItem = {
   bookId: string;
@@ -26,12 +27,40 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
+    let stored: CartItem[] = [];
     try {
-      const stored = localStorage.getItem("cart");
-      if (stored) setItems(JSON.parse(stored));
+      const raw = localStorage.getItem("cart");
+      if (raw) stored = JSON.parse(raw);
     } catch {
-      setItems([]);
+      stored = [];
     }
+
+    if (stored.length === 0) {
+      setItems([]);
+      return;
+    }
+
+    getFreshBooks(stored.map((i) => i.bookId))
+      .then((fresh) => {
+        const refreshed = stored
+          .map((item) => {
+            const book = fresh.find((b) => b.id === item.bookId);
+            if (!book) return null;
+            return {
+              bookId: book.id,
+              title: book.title,
+              price: book.price,
+              stock: book.stock,
+              quantity: Math.min(item.quantity, book.stock),
+            };
+          })
+          .filter((i): i is CartItem => i !== null && i.quantity > 0);
+        setItems(refreshed);
+        try {
+          localStorage.setItem("cart", JSON.stringify(refreshed));
+        } catch {}
+      })
+      .catch(() => setItems(stored));
   }, []);
 
   useEffect(() => {
