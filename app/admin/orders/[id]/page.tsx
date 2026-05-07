@@ -4,7 +4,9 @@ import Link from "next/link";
 import { OrderStatus } from "@prisma/client";
 import { auth } from "../../../../auth";
 import StatusForm from "./StatusForm";
+import ResendEmailButton from "./ResendEmailButton";
 import { formatPrice } from "../../../../lib/format";
+import { sendOrderConfirmation } from "../../../../lib/mailer";
 
 export const dynamic = "force-dynamic";
 
@@ -37,11 +39,34 @@ export default async function OrderDetailPage({
   });
   if (!order) notFound();
 
+  const emailPayload = {
+    customerName: order.customerName,
+    orderId: order.id,
+    items: order.items.map((i) => ({
+      title: i.book.title,
+      quantity: i.quantity,
+      price: i.price,
+    })),
+    total: order.total,
+    discountCode: order.discountCode,
+    discountPercent: order.discountPercent,
+  };
+
   async function updateStatus(formData: FormData) {
     "use server";
     const status = formData.get("status") as OrderStatus;
     await prisma.order.update({ where: { id }, data: { status } });
     redirect(`/admin/orders/${id}`);
+  }
+
+  async function resendEmail(email: string): Promise<string | null> {
+    "use server";
+    try {
+      await sendOrderConfirmation({ to: email, ...emailPayload });
+      return null;
+    } catch {
+      return "Could not send email. Please try again.";
+    }
   }
 
   return (
@@ -106,8 +131,15 @@ export default async function OrderDetailPage({
         </div>
       </Section>
 
-      <Section title="Oppdater status">
+      <Section title="Oppdater status" className="mb-6">
         <StatusForm currentStatus={order.status} updateStatus={updateStatus} />
+      </Section>
+
+      <Section title="E-post">
+        <ResendEmailButton
+          defaultEmail={order.customerEmail}
+          resendEmail={resendEmail}
+        />
       </Section>
     </main>
   );
