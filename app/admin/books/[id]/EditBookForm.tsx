@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Book } from "@prisma/client";
 import { updateBook, deleteBook, setBookArchived } from "../actions";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 async function fetchBookByIsbn(isbn: string) {
   const res = await fetch(
@@ -26,15 +27,15 @@ export default function EditBookForm({ book }: { book: Book }) {
   const [imageRemoved, setImageRemoved] = useState(false);
   const [fileInputKey, setFileInputKey] = useState(0);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isbn, setIsbn] = useState(book.isbn);
   const isbnRef = useRef<HTMLInputElement>(null);
 
   const update = updateBook.bind(null, book.id);
 
   async function handleDelete() {
-    if (!confirm("Er du sikker på at du vil slette denne boken?")) return;
     const result = await deleteBook(book.id);
-    if (result) setDeleteError(result);
+    if (result) { setDeleteError(result); setShowDeleteModal(false); }
   }
 
   function handleRemoveImage() {
@@ -181,12 +182,22 @@ export default function EditBookForm({ book }: { book: Book }) {
         )}
         <button
           type="button"
-          onClick={handleDelete}
+          onClick={() => setShowDeleteModal(true)}
           className="w-full py-2.5 border border-red-200 text-red-700 rounded text-sm font-medium hover:bg-red-50 transition-colors"
         >
           Slett bok
         </button>
       </div>
+
+      <ConfirmModal
+        open={showDeleteModal}
+        title="Slett bok"
+        message={<>Er du sikker på at du vil slette <span className="font-medium text-[var(--foreground)]">{book.title}</span>? Dette kan ikke angres.</>}
+        confirmLabel="Slett"
+        destructive
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </>
   );
 }

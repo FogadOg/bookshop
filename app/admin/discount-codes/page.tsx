@@ -3,7 +3,8 @@ import { prisma } from "../../../lib/prisma";
 import Link from "next/link";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
-import { createDiscountCode, toggleDiscountCode, deleteDiscountCode } from "./actions";
+import { createDiscountCode, toggleDiscountCode } from "./actions";
+import DeleteDiscountButton from "./DeleteDiscountButton";
 
 export const metadata: Metadata = { title: "Rabattkoder – Admin | Bokhandelen" };
 
@@ -91,11 +92,7 @@ export default async function DiscountCodesPage() {
                   {c.active ? "Deaktiver" : "Aktiver"}
                 </button>
               </form>
-              <form action={deleteDiscountCode.bind(null, c.id)}>
-                <button type="submit" className="text-muted hover:text-red-600 transition-colors px-2 py-1">
-                  Slett
-                </button>
-              </form>
+              <DeleteDiscountButton id={c.id} code={c.code} />
             </div>
           </div>
         ))}
