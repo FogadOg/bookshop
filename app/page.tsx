@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { prisma } from "../lib/prisma";
 import BookCard from "./components/BookCard";
 import SearchForm from "./components/SearchForm";
+
+export const metadata: Metadata = { title: "Bokhandelen" };
 
 export default async function Home({
   searchParams,

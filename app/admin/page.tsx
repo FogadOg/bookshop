@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "../../lib/prisma";
 import Link from "next/link";
 import { signOut, auth } from "../../auth";
 import { redirect } from "next/navigation";
 import { formatPrice } from "../../lib/format";
+
+export const metadata: Metadata = { title: "Oversikt – Admin | Bokhandelen" };
 
 export const dynamic = "force-dynamic";
 

@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { prisma } from "../../../../lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { OrderStatus } from "@prisma/client";
 import { auth } from "../../../../auth";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  return { title: `Ordre #${id.slice(-8).toUpperCase()} – Admin | Bokhandelen` };
+}
 import StatusForm from "./StatusForm";
 import ResendEmailButton from "./ResendEmailButton";
 import { formatPrice } from "../../../../lib/format";

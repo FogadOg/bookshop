@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import { prisma } from "../../../lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import AddToCartButton from "./AddToCartButton";
 import { formatPrice } from "../../../lib/format";
 import BackButton from "./BackButton";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const book = await prisma.book.findUnique({ where: { id }, select: { title: true, author: true } });
+  if (!book) return {};
+  return { title: `${book.title} – ${book.author} | Bokhandelen` };
+}
 
 async function getRelatedBooks(bookId: string, category: string) {
   // Find orders that include this book

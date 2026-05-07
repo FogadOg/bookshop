@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "../../../../auth";
 import CreateBookForm from "./CreateBookForm";
+
+export const metadata: Metadata = { title: "Ny bok – Admin | Bokhandelen" };
 
 export const dynamic = "force-dynamic";
 

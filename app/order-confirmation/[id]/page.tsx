@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { prisma } from "../../../lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ClearCart from "./ClearCart";
 import { formatPrice } from "../../../lib/format";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  return { title: `Ordrebekreftelse #${id.slice(-8).toUpperCase()} | Bokhandelen` };
+}
 
 export default async function OrderConfirmationPage({
   params,

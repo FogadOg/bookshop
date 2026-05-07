@@ -1,8 +1,16 @@
+import type { Metadata } from "next";
 import { prisma } from "../../../../lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "../../../../auth";
 import EditBookForm from "./EditBookForm";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const book = await prisma.book.findUnique({ where: { id }, select: { title: true } });
+  if (!book) return {};
+  return { title: `${book.title} – Rediger | Admin | Bokhandelen` };
+}
 
 export const dynamic = "force-dynamic";
 
